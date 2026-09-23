@@ -98,11 +98,11 @@ export default function PartList({
 
         {/* FILTER */}
 
-        <div className="mt-5 grid gap-3 md:grid-cols-3">
+        <div className="mt-5 grid grid-cols-2 gap-3">
 
           {/* SEARCH */}
 
-          <div>
+          <div className="col-span-2">
 
             <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-600">
               Cari
@@ -118,9 +118,7 @@ export default function PartList({
                 type="text"
                 value={search}
                 onChange={(e) =>
-                  onSearch(
-                    e.target.value
-                  )
+                  onSearch(e.target.value)
                 }
                 placeholder="Cari kode part..."
                 className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-10 pr-4 text-sm font-medium text-slate-800 outline-none placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
@@ -131,9 +129,9 @@ export default function PartList({
           </div>
 
 
-          {/* AREA */}
+          {/* FILTER AREA */}
 
-          <div>
+          <div className="min-w-0">
 
             <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-600">
               Filter Area
@@ -142,38 +140,32 @@ export default function PartList({
             <select
               value={filterArea}
               onChange={(e) =>
-                onFilterArea(
-                  e.target.value
-                )
+                onFilterArea(e.target.value)
               }
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+              className="w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 outline-none hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 sm:px-4"
             >
 
               <option value="ALL">
                 Semua Area
               </option>
 
-              {AREA_OPTIONS.map(
-                (item) => (
-
-                  <option
-                    key={item.label}
-                    value={item.label}
-                  >
-                    {item.label}
-                  </option>
-
-                )
-              )}
+              {AREA_OPTIONS.map((item) => (
+                <option
+                  key={item.label}
+                  value={item.label}
+                >
+                  {item.label}
+                </option>
+              ))}
 
             </select>
 
           </div>
 
 
-          {/* COLOR */}
+          {/* FILTER WARNA */}
 
-          <div>
+          <div className="min-w-0">
 
             <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-600">
               Filter Warna
@@ -182,29 +174,23 @@ export default function PartList({
             <select
               value={filterColor}
               onChange={(e) =>
-                onFilterColor(
-                  e.target.value
-                )
+                onFilterColor(e.target.value)
               }
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+              className="w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 outline-none hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 sm:px-4"
             >
 
               <option value="ALL">
                 Semua Warna
               </option>
 
-              {COLOR_OPTIONS.map(
-                (item) => (
-
-                  <option
-                    key={item}
-                    value={item}
-                  >
-                    {item}
-                  </option>
-
-                )
-              )}
+              {COLOR_OPTIONS.map((item) => (
+                <option
+                  key={item}
+                  value={item}
+                >
+                  {item}
+                </option>
+              ))}
 
             </select>
 
