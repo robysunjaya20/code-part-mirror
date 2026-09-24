@@ -55,7 +55,6 @@ export default function PartList({
   return (
     <section className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-
       {/* =========================
           HEADER
       ========================= */}
@@ -98,10 +97,7 @@ export default function PartList({
 
         <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
 
-
-          {/* =========================
-              SEARCH
-          ========================= */}
+          {/* SEARCH */}
 
           <div className="sm:col-span-2">
 
@@ -125,7 +121,7 @@ export default function PartList({
                     e.target.value
                   )
                 }
-                placeholder="Cari Kode Part, LOT, Model, Result, atau Detail Problem..."
+                placeholder="Cari Kode Part, LOT, Model, Area, Rak, PIC, Shift, atau Detail Problem..."
                 className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-10 pr-4 text-sm font-medium text-slate-800 outline-none placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
               />
 
@@ -134,9 +130,7 @@ export default function PartList({
           </div>
 
 
-          {/* =========================
-              FILTER MODEL
-          ========================= */}
+          {/* FILTER MODEL */}
 
           <div className="min-w-0">
 
@@ -180,9 +174,7 @@ export default function PartList({
         </div>
 
 
-        {/* =========================
-            RESET FILTER
-        ========================= */}
+        {/* RESET FILTER */}
 
         {hasFilter && (
 
@@ -205,7 +197,6 @@ export default function PartList({
 
       <div className="p-5 sm:p-6">
 
-
         {data.length === 0 ? (
 
           <EmptyState
@@ -226,16 +217,13 @@ export default function PartList({
                   className="rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-blue-300 hover:bg-blue-50/30 hover:shadow-sm"
                 >
 
-
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-
 
                     {/* =========================
                         INFO
                     ========================= */}
 
                     <div className="min-w-0">
-
 
                       {/* FULL CODE */}
 
@@ -256,7 +244,6 @@ export default function PartList({
                       {/* DETAILS */}
 
                       <div className="mt-3 flex flex-wrap gap-2 pl-11">
-
 
                         {/* MODEL */}
 
@@ -288,8 +275,72 @@ export default function PartList({
                         {/* STAMP DATE / LOT */}
 
                         <span className="rounded-full bg-amber-100 px-3 py-1 font-mono text-xs font-bold text-amber-800">
-                          LOT: {item.stampDate}
+                          LOT: {item.stampDate || "-"}
                         </span>
+
+                      </div>
+
+
+                      {/* =========================
+                          AREA / RAK / PIC / SHIFT
+                      ========================= */}
+
+                      <div className="mt-3 ml-11 rounded-xl border border-indigo-100 bg-indigo-50 p-3">
+
+                        <div className="flex flex-wrap gap-x-5 gap-y-2">
+
+                          {/* AREA */}
+
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wide text-indigo-500">
+                              Area
+                            </p>
+
+                            <p className="text-sm font-bold text-indigo-900">
+                              {item.workArea || "-"}
+                            </p>
+                          </div>
+
+
+                          {/* RAK JIS */}
+
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wide text-indigo-500">
+                              Rak JIS
+                            </p>
+
+                            <p className="text-sm font-bold text-indigo-900">
+                              {item.rackJis || "-"}
+                            </p>
+                          </div>
+
+
+                          {/* PIC */}
+
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wide text-indigo-500">
+                              PIC
+                            </p>
+
+                            <p className="text-sm font-bold text-indigo-900">
+                              {item.pic || "-"}
+                            </p>
+                          </div>
+
+
+                          {/* SHIFT */}
+
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wide text-indigo-500">
+                              Shift
+                            </p>
+
+                            <p className="text-sm font-bold text-indigo-900">
+                              {item.shift || "-"}
+                            </p>
+                          </div>
+
+                        </div>
 
                       </div>
 
@@ -322,7 +373,6 @@ export default function PartList({
                     ========================= */}
 
                     <div className="flex shrink-0 gap-2 pl-11 sm:pl-0">
-
 
                       {/* EDIT */}
 
@@ -385,7 +435,6 @@ function EmptyState({
 
     <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 py-14 text-center">
 
-
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-2xl shadow-sm">
         {icon}
       </div>
@@ -399,7 +448,6 @@ function EmptyState({
       <p className="mt-1 text-sm font-medium text-slate-500">
         {description}
       </p>
-
 
     </div>
 

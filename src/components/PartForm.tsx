@@ -335,11 +335,6 @@ export default function PartForm({
 
         </div>
 
-
-        {/* =========================
-            PREVIEW
-        ========================= */}
-
         <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-5">
 
           <p className="text-xs font-bold uppercase tracking-wider text-blue-700">

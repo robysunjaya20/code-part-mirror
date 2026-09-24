@@ -9,6 +9,8 @@ import Footer from "@/components/Footer";
 
 import StatsCards from "@/components/StatsCards";
 
+import AreaSetting from "@/components/AreaSetting";
+
 import PartForm from "@/components/PartForm";
 
 import PartList from "@/components/PartList";
@@ -64,6 +66,28 @@ export default function Home() {
 
     resetForm,
 
+    // ========================================
+    // SETTING AREA
+    // ========================================
+
+    workArea,
+
+    rackJis,
+
+    pic,
+
+    shift,
+
+    updateWorkArea,
+
+    updateRackJis,
+
+    updatePic,
+
+    updateShift,
+
+    saveAreaSetting,
+
   } = usePartCodes();
 
 
@@ -102,6 +126,47 @@ export default function Home() {
       | "info";
   } | null>(null);
 
+
+  // ========================================
+  // SAVE AREA SETTING
+  // ========================================
+
+  const handleSaveAreaSetting = () => {
+
+    const result =
+      saveAreaSetting();
+
+
+    if (!result.success) {
+
+      setToast({
+        message:
+          result.message,
+
+        type:
+          "error",
+      });
+
+      return;
+
+    }
+
+
+    setToast({
+      message:
+        result.message,
+
+      type:
+        "success",
+    });
+
+  };
+
+
+  // ========================================
+  // SAVE PART
+  // ========================================
+
   const handleSavePart = () => {
 
     const result =
@@ -133,6 +198,11 @@ export default function Home() {
 
   };
 
+
+  // ========================================
+  // DELETE PART
+  // ========================================
+
   const handleDeletePart = (
     id: number
   ) => {
@@ -149,6 +219,11 @@ export default function Home() {
     });
 
   };
+
+
+  // ========================================
+  // DELETE ALL
+  // ========================================
 
   const handleDeleteAll = () => {
 
@@ -167,6 +242,11 @@ export default function Home() {
     });
 
   };
+
+
+  // ========================================
+  // OPEN SYNC MODAL
+  // ========================================
 
   const openSyncModal = () => {
 
@@ -188,9 +268,15 @@ export default function Home() {
 
   };
 
+
+  // ========================================
+  // SYNC GOOGLE SHEETS
+  // ========================================
+
   const handleSync = async () => {
 
     try {
+
       setIsSyncing(true);
 
       const result =
@@ -198,15 +284,18 @@ export default function Home() {
           data
         );
 
+
       setLastSync(
         new Date().toLocaleString(
           "id-ID"
         )
       );
 
+
       setShowSyncModal(
         false
       );
+
 
       setToast({
         message:
@@ -226,6 +315,7 @@ export default function Home() {
         false
       );
 
+
       setToast({
         message:
           error instanceof Error
@@ -235,6 +325,7 @@ export default function Home() {
         type:
           "error",
       });
+
 
     } finally {
 
@@ -251,7 +342,58 @@ export default function Home() {
 
       <Header />
 
+
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+
+
+        {/* ========================================
+            SETTING AREA KERJA
+        ======================================== */}
+
+        <AreaSetting
+
+          area={
+            workArea
+          }
+
+          rackJis={
+            rackJis
+          }
+
+          pic={
+            pic
+          }
+
+          shift={
+            shift
+          }
+
+          onChangeArea={
+            updateWorkArea
+          }
+
+          onChangeRackJis={
+            updateRackJis
+          }
+
+          onChangePic={
+            updatePic
+          }
+
+          onChangeShift={
+            updateShift
+          }
+
+          onSave={
+            handleSaveAreaSetting
+          }
+
+        />
+
+
+        {/* ========================================
+            STATISTICS
+        ======================================== */}
 
         <StatsCards
           data={
@@ -263,7 +405,13 @@ export default function Home() {
           }
         />
 
+
+        {/* ========================================
+            FORM KODE PART
+        ======================================== */}
+
         <PartForm
+
           form={
             form
           }
@@ -287,9 +435,16 @@ export default function Home() {
           onCancel={
             resetForm
           }
+
         />
 
+
+        {/* ========================================
+            LIST DATA
+        ======================================== */}
+
         <PartList
+
           data={
             filteredData
           }
@@ -333,9 +488,16 @@ export default function Home() {
             );
 
           }}
+
         />
 
+
+        {/* ========================================
+            GOOGLE SHEETS
+        ======================================== */}
+
         <GoogleSheetsCard
+
           dataCount={
             data.length
           }
@@ -351,16 +513,24 @@ export default function Home() {
           onSync={
             openSyncModal
           }
+
         />
 
       </main>
 
+
       <Footer />
+
+
+      {/* ========================================
+          SYNC MODAL
+      ======================================== */}
 
       {showSyncModal &&
         !isSyncing && (
 
         <SyncModal
+
           dataCount={
             data.length
           }
@@ -374,6 +544,7 @@ export default function Home() {
           onConfirm={
             handleSync
           }
+
         />
 
       )}
@@ -424,9 +595,11 @@ export default function Home() {
 
       )}
 
+
       {showDeleteAllModal && (
 
         <DeleteAllModal
+
           dataCount={
             data.length
           }
@@ -440,6 +613,7 @@ export default function Home() {
           onConfirm={
             handleDeleteAll
           }
+
         />
 
       )}
@@ -447,6 +621,7 @@ export default function Home() {
       {toast && (
 
         <Toast
+
           message={
             toast.message
           }
@@ -466,4 +641,5 @@ export default function Home() {
     </div>
 
   );
+
 }

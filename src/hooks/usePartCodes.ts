@@ -11,13 +11,35 @@ import {
 } from "@/data/partConfig";
 
 import type {
+  AreaSetting,
   PartData,
   PartFormData,
+  RackJisType,
+  ShiftType,
 } from "@/types/part";
 
-const STORAGE_KEY = "part-code-data";
+
+// ========================================
+// STORAGE KEY
+// ========================================
+
+const STORAGE_KEY =
+  "part-code-data";
+
+const SETTING_STORAGE_KEY =
+  "part-area-setting";
+
+
+// ========================================
+// HOOK
+// ========================================
 
 export function usePartCodes() {
+
+
+  // ======================================
+  // DATA
+  // ======================================
 
   const [data, setData] =
     useState<PartData[]>([]);
@@ -25,20 +47,87 @@ export function usePartCodes() {
   const [isLoaded, setIsLoaded] =
     useState(false);
 
+
+  // ======================================
+  // SETTING AREA KERJA
+  // ======================================
+
+  const [workArea, setWorkArea] =
+    useState<AreaSetting>(
+      "RAK JIS"
+    );
+
+
+  const [rackJis, setRackJis] =
+    useState<RackJisType | "">(
+      "RAK JIS 1"
+    );
+
+
+  const [pic, setPic] =
+    useState("");
+
+
+  const [shift, setShift] =
+    useState<ShiftType>(
+      "SHIFT 1"
+    );
+
+
+  // ======================================
+  // FORM
+  // ======================================
+
   const [form, setForm] =
     useState<PartFormData>({
-      area: "SU2ID LH",
-      partCode: "",
-      result: "OK",
-      stampDate: "",
-      detailProblem: "",
+
+      area:
+        "SU2ID LH",
+
+      partCode:
+        "",
+
+      result:
+        "OK",
+
+      stampDate:
+        "",
+
+      detailProblem:
+        "",
+
+      workArea:
+        "RAK JIS",
+
+      rackJis:
+        "RAK JIS 1",
+
+      pic:
+        "",
+
+      shift:
+        "SHIFT 1",
+
     });
 
+
+  // ======================================
+  // EDITING
+  // ======================================
+
   const [editingId, setEditingId] =
-    useState<number | null>(null);
+    useState<number | null>(
+      null
+    );
+
+
+  // ======================================
+  // SEARCH
+  // ======================================
 
   const [search, setSearch] =
     useState("");
+
 
   const [filterArea, setFilterArea] =
     useState("ALL");
@@ -52,65 +141,249 @@ export function usePartCodes() {
 
     try {
 
+      // ====================================
+      // LOAD DATA
+      // ====================================
+
       const saved =
         localStorage.getItem(
           STORAGE_KEY
         );
+
 
       if (saved) {
 
         const parsed =
           JSON.parse(saved);
 
-        if (Array.isArray(parsed)) {
+
+        if (
+          Array.isArray(parsed)
+        ) {
 
           const migrated =
-            parsed.map((item) => {
+            parsed.map(
+              (item) => {
 
-              let partCode =
-                item.partCode || "";
+                // --------------------------
+                // Migrasi Part Code lama
+                // --------------------------
 
-              // Migrasi data lama:
-              // 020 + NB9 -> 020NB9
-              if (
-                item.color &&
-                /^\d{3}$/.test(partCode)
-              ) {
+                let partCode =
+                  item.partCode || "";
 
-                partCode =
-                  `${partCode}${item.color}`;
+
+                // Data lama:
+                // 020 + NB9 = 020NB9
+
+                if (
+                  item.color &&
+                  /^\d{3}$/.test(
+                    partCode
+                  )
+                ) {
+
+                  partCode =
+                    `${partCode}${item.color}`;
+
+                }
+
+
+                // --------------------------
+                // Result
+                // --------------------------
+
+                const result =
+                  item.result === "NG"
+                    ? "NG"
+                    : "OK";
+
+
+                // --------------------------
+                // Work Area
+                // --------------------------
+
+                const migratedWorkArea:
+                  AreaSetting =
+                  item.workArea ===
+                  "DOORSUB"
+                    ? "DOORSUB"
+                    : "RAK JIS";
+
+
+                // --------------------------
+                // Rack JIS
+                // --------------------------
+
+                const migratedRack =
+                  item.rackJis || "";
+
+
+                // --------------------------
+                // Shift
+                // --------------------------
+
+                const migratedShift:
+                  ShiftType =
+                  item.shift === "SHIFT 2"
+                    ? "SHIFT 2"
+                    : item.shift === "SHIFT 3"
+                      ? "SHIFT 3"
+                      : "SHIFT 1";
+
+
+                return {
+
+                  ...item,
+
+                  partCode,
+
+                  fullCode:
+                    `${item.prefix || ""}${partCode}`,
+
+                  result,
+
+                  stampDate:
+                    item.stampDate || "",
+
+                  detailProblem:
+                    item.detailProblem || "",
+
+                  workArea:
+                    migratedWorkArea,
+
+                  rackJis:
+                    migratedRack,
+
+                  pic:
+                    item.pic || "",
+
+                  shift:
+                    migratedShift,
+
+                };
 
               }
+            );
 
-              const result =
-                item.result === "NG"
-                  ? "NG"
-                  : "OK";
 
-              return {
-
-                ...item,
-
-                partCode,
-
-                fullCode:
-                  `${item.prefix || ""}${partCode}`,
-
-                result,
-
-                stampDate:
-                  item.stampDate || "",
-
-                detailProblem:
-                  item.detailProblem || "",
-
-              };
-
-            });
-
-          setData(migrated);
+          setData(
+            migrated
+          );
 
         }
+
+      }
+
+
+      // ====================================
+      // LOAD SETTING
+      // ====================================
+
+      const savedSetting =
+        localStorage.getItem(
+          SETTING_STORAGE_KEY
+        );
+
+
+      if (savedSetting) {
+
+        const setting =
+          JSON.parse(
+            savedSetting
+          );
+
+
+        // --------------------------
+        // Area
+        // --------------------------
+
+        const loadedArea:
+          AreaSetting =
+          setting.workArea ===
+          "DOORSUB"
+            ? "DOORSUB"
+            : "RAK JIS";
+
+
+        // --------------------------
+        // Rack JIS
+        // --------------------------
+
+        const loadedRack:
+          RackJisType | "" =
+          setting.rackJis ||
+          "RAK JIS 1";
+
+
+        // --------------------------
+        // PIC
+        // --------------------------
+
+        const loadedPic =
+          setting.pic || "";
+
+
+        // --------------------------
+        // Shift
+        // --------------------------
+
+        const loadedShift:
+          ShiftType =
+          setting.shift === "SHIFT 2"
+            ? "SHIFT 2"
+            : setting.shift === "SHIFT 3"
+              ? "SHIFT 3"
+              : "SHIFT 1";
+
+
+        // --------------------------
+        // Set state
+        // --------------------------
+
+        setWorkArea(
+          loadedArea
+        );
+
+
+        setRackJis(
+          loadedRack
+        );
+
+
+        setPic(
+          loadedPic
+        );
+
+
+        setShift(
+          loadedShift
+        );
+
+
+        // --------------------------
+        // Update form
+        // --------------------------
+
+        setForm(
+          (previous) => ({
+
+            ...previous,
+
+            workArea:
+              loadedArea,
+
+            rackJis:
+              loadedRack,
+
+            pic:
+              loadedPic,
+
+            shift:
+              loadedShift,
+
+          })
+        );
 
       }
 
@@ -123,13 +396,16 @@ export function usePartCodes() {
 
     }
 
-    setIsLoaded(true);
+
+    setIsLoaded(
+      true
+    );
 
   }, []);
 
 
   // ========================================
-  // SAVE LOCAL STORAGE
+  // SAVE DATA TO LOCAL STORAGE
   // ========================================
 
   useEffect(() => {
@@ -137,6 +413,7 @@ export function usePartCodes() {
     if (!isLoaded) {
       return;
     }
+
 
     try {
 
@@ -164,27 +441,34 @@ export function usePartCodes() {
   // PREVIEW FULL CODE
   // ========================================
 
-  const previewCode = useMemo(() => {
+  const previewCode =
+    useMemo(() => {
 
-    const selectedArea =
-      AREA_OPTIONS.find(
-        (item) =>
-          item.label === form.area
+      const selectedArea =
+        AREA_OPTIONS.find(
+          (item) =>
+            item.label ===
+            form.area
+        );
+
+
+      if (!selectedArea) {
+        return "";
+      }
+
+
+      return (
+        selectedArea.prefix +
+        (
+          form.partCode ||
+          "---"
+        )
       );
 
-    if (!selectedArea) {
-      return "";
-    }
-
-    return (
-      selectedArea.prefix +
-      (form.partCode || "---")
-    );
-
-  }, [
-    form.area,
-    form.partCode,
-  ]);
+    }, [
+      form.area,
+      form.partCode,
+    ]);
 
 
   // ========================================
@@ -196,10 +480,285 @@ export function usePartCodes() {
     value: string
   ) => {
 
-    setForm((previous) => ({
-      ...previous,
-      [field]: value,
-    }));
+    setForm(
+      (previous) => ({
+
+        ...previous,
+
+        [field]:
+          value,
+
+      })
+    );
+
+  };
+
+
+  // ========================================
+  // UPDATE WORK AREA
+  // ========================================
+
+  const updateWorkArea = (
+    value: AreaSetting
+  ) => {
+
+    setWorkArea(
+      value
+    );
+
+
+    /*
+      RAK JIS dan DOORSUB
+      sama-sama menggunakan
+      Rak JIS 1-8.
+
+      Jadi ketika Area diganti,
+      Rak JIS TIDAK dikosongkan.
+    */
+
+    const selectedRack:
+      RackJisType =
+      rackJis ||
+      "RAK JIS 1";
+
+
+    setRackJis(
+      selectedRack
+    );
+
+
+    setForm(
+      (previous) => ({
+
+        ...previous,
+
+        workArea:
+          value,
+
+        rackJis:
+          selectedRack,
+
+      })
+    );
+
+  };
+
+
+  // ========================================
+  // UPDATE RACK JIS
+  // ========================================
+
+  const updateRackJis = (
+    value: RackJisType | ""
+  ) => {
+
+    setRackJis(
+      value
+    );
+
+
+    setForm(
+      (previous) => ({
+
+        ...previous,
+
+        rackJis:
+          value,
+
+      })
+    );
+
+  };
+
+
+  // ========================================
+  // UPDATE PIC
+  // ========================================
+
+  const updatePic = (
+    value: string
+  ) => {
+
+    setPic(
+      value
+    );
+
+
+    setForm(
+      (previous) => ({
+
+        ...previous,
+
+        pic:
+          value,
+
+      })
+    );
+
+  };
+
+
+  // ========================================
+  // UPDATE SHIFT
+  // ========================================
+
+  const updateShift = (
+    value: ShiftType
+  ) => {
+
+    setShift(
+      value
+    );
+
+
+    setForm(
+      (previous) => ({
+
+        ...previous,
+
+        shift:
+          value,
+
+      })
+    );
+
+  };
+
+
+  // ========================================
+  // SAVE AREA SETTING
+  // ========================================
+
+  const saveAreaSetting = () => {
+
+
+    // --------------------------------------
+    // Rak JIS WAJIB dipilih
+    // untuk RAK JIS maupun DOORSUB
+    // --------------------------------------
+
+    const finalRack =
+      rackJis;
+
+
+    if (!finalRack) {
+
+      return {
+
+        success:
+          false,
+
+        message:
+          "Silakan pilih Rak JIS terlebih dahulu.",
+
+      };
+
+    }
+
+
+    // --------------------------------------
+    // PIC
+    // --------------------------------------
+
+    if (
+      !pic.trim()
+    ) {
+
+      return {
+
+        success:
+          false,
+
+        message:
+          "PIC harus diisi.",
+
+      };
+
+    }
+
+
+    // --------------------------------------
+    // SHIFT
+    // --------------------------------------
+
+    if (!shift) {
+
+      return {
+
+        success:
+          false,
+
+        message:
+          "Silakan pilih Shift.",
+
+      };
+
+    }
+
+
+    // --------------------------------------
+    // Setting
+    // --------------------------------------
+
+    const setting = {
+
+      workArea,
+
+      rackJis:
+        finalRack,
+
+      pic:
+        pic.trim(),
+
+      shift,
+
+    };
+
+
+    // --------------------------------------
+    // Save Local Storage
+    // --------------------------------------
+
+    localStorage.setItem(
+      SETTING_STORAGE_KEY,
+      JSON.stringify(
+        setting
+      )
+    );
+
+
+    // --------------------------------------
+    // Update Form
+    // --------------------------------------
+
+    setForm(
+      (previous) => ({
+
+        ...previous,
+
+        workArea,
+
+        rackJis:
+          finalRack,
+
+        pic:
+          pic.trim(),
+
+        shift,
+
+      })
+    );
+
+
+    return {
+
+      success:
+        true,
+
+      message:
+        "Setting Area berhasil disimpan.",
+
+    };
 
   };
 
@@ -210,15 +769,42 @@ export function usePartCodes() {
 
   const resetForm = () => {
 
-    setForm({
-      area: "SU2ID LH",
-      partCode: "",
-      result: "OK",
-      stampDate: "",
-      detailProblem: "",
-    });
+    setForm(
+      (previous) => ({
 
-    setEditingId(null);
+        ...previous,
+
+        area:
+          "SU2ID LH",
+
+        partCode:
+          "",
+
+        result:
+          "OK",
+
+        stampDate:
+          "",
+
+        detailProblem:
+          "",
+
+        // Setting terakhir
+        workArea,
+
+        rackJis,
+
+        pic,
+
+        shift,
+
+      })
+    );
+
+
+    setEditingId(
+      null
+    );
 
   };
 
@@ -229,9 +815,10 @@ export function usePartCodes() {
 
   const savePart = () => {
 
-    // ----------------------------------------
-    // Validasi Kode Part
-    // ----------------------------------------
+
+    // --------------------------------------
+    // VALIDASI KODE PART
+    // --------------------------------------
 
     if (
       !/^\d{3}[A-Z0-9]{3}$/.test(
@@ -241,19 +828,20 @@ export function usePartCodes() {
 
       return {
 
-        success: false,
+        success:
+          false,
 
         message:
-          "Kode Part harus terdiri dari 3 angka + 3 kode warna. Contoh: 020NB9.",
+          "Kode Part harus terdiri dari 3 angka + 3 karakter. Contoh: 020NB9.",
 
       };
 
     }
 
 
-    // ----------------------------------------
-    // Validasi Result
-    // ----------------------------------------
+    // --------------------------------------
+    // VALIDASI RESULT
+    // --------------------------------------
 
     if (
       form.result !== "OK" &&
@@ -262,7 +850,8 @@ export function usePartCodes() {
 
       return {
 
-        success: false,
+        success:
+          false,
 
         message:
           "Result harus dipilih OK atau NG.",
@@ -272,9 +861,9 @@ export function usePartCodes() {
     }
 
 
-    // ----------------------------------------
-    // Validasi Stamp Date / LOT
-    // ----------------------------------------
+    // --------------------------------------
+    // VALIDASI STAMP DATE / LOT
+    // --------------------------------------
 
     if (
       !/^[A-Z]\d{4}$/.test(
@@ -284,7 +873,8 @@ export function usePartCodes() {
 
       return {
 
-        success: false,
+        success:
+          false,
 
         message:
           "STAMP DATE / LOT harus terdiri dari 1 huruf dan 4 angka. Contoh: A1234.",
@@ -294,28 +884,115 @@ export function usePartCodes() {
     }
 
 
-    // ========================================
-    // DETAIL PROBLEM TIDAK WAJIB
-    // ========================================
-    // Tidak ada validasi di sini.
-    // Boleh kosong.
+    // --------------------------------------
+    // VALIDASI AREA KERJA
+    // --------------------------------------
+
+    if (
+      !form.workArea
+    ) {
+
+      return {
+
+        success:
+          false,
+
+        message:
+          "Area kerja belum dipilih.",
+
+      };
+
+    }
 
 
-    // ----------------------------------------
-    // Cari Model
-    // ----------------------------------------
+    // --------------------------------------
+    // VALIDASI RAK JIS
+    // --------------------------------------
+
+    /*
+      Berlaku untuk:
+
+      RAK JIS
+      DOORSUB
+    */
+
+    if (
+      !form.rackJis
+    ) {
+
+      return {
+
+        success:
+          false,
+
+        message:
+          "Rak JIS belum dipilih.",
+
+      };
+
+    }
+
+
+    // --------------------------------------
+    // VALIDASI PIC
+    // --------------------------------------
+
+    if (
+      !form.pic.trim()
+    ) {
+
+      return {
+
+        success:
+          false,
+
+        message:
+          "PIC belum diisi. Silakan simpan Setting Area terlebih dahulu.",
+
+      };
+
+    }
+
+
+    // --------------------------------------
+    // VALIDASI SHIFT
+    // --------------------------------------
+
+    if (
+      !form.shift
+    ) {
+
+      return {
+
+        success:
+          false,
+
+        message:
+          "Shift belum dipilih.",
+
+      };
+
+    }
+
+
+    // --------------------------------------
+    // CARI MODEL
+    // --------------------------------------
 
     const selectedArea =
       AREA_OPTIONS.find(
         (item) =>
-          item.label === form.area
+          item.label ===
+          form.area
       );
+
 
     if (!selectedArea) {
 
       return {
 
-        success: false,
+        success:
+          false,
 
         message:
           "Model tidak ditemukan.",
@@ -325,57 +1002,73 @@ export function usePartCodes() {
     }
 
 
-    // ----------------------------------------
-    // Generate Full Code
-    // ----------------------------------------
+    // --------------------------------------
+    // FULL CODE
+    // --------------------------------------
 
     const fullCode =
       selectedArea.prefix +
       form.partCode;
 
 
-    // ========================================
+    // ======================================
     // UPDATE DATA
-    // ========================================
+    // ======================================
 
-    if (editingId !== null) {
+    if (
+      editingId !== null
+    ) {
 
-      setData((previous) =>
+      setData(
+        (previous) =>
 
-        previous.map((item) =>
+          previous.map(
+            (item) =>
 
-          item.id === editingId
+              item.id ===
+              editingId
 
-            ? {
+                ? {
 
-                ...item,
+                    ...item,
 
-                area:
-                  form.area,
+                    area:
+                      form.area,
 
-                prefix:
-                  selectedArea.prefix,
+                    prefix:
+                      selectedArea.prefix,
 
-                partCode:
-                  form.partCode,
+                    partCode:
+                      form.partCode,
 
-                fullCode,
+                    fullCode,
 
-                result:
-                  form.result,
+                    result:
+                      form.result,
 
-                stampDate:
-                  form.stampDate,
+                    stampDate:
+                      form.stampDate,
 
-                detailProblem:
-                  form.detailProblem.trim(),
+                    detailProblem:
+                      form.detailProblem.trim(),
 
-              }
+                    workArea:
+                      form.workArea,
 
-            : item
+                    rackJis:
+                      form.rackJis,
 
-        )
+                    pic:
+                      form.pic.trim(),
 
+                    shift:
+                      form.shift,
+
+                  }
+
+                : item
+
+          )
       );
 
 
@@ -384,7 +1077,8 @@ export function usePartCodes() {
 
       return {
 
-        success: true,
+        success:
+          true,
 
         mode:
           "update" as const,
@@ -397,11 +1091,12 @@ export function usePartCodes() {
     }
 
 
-    // ========================================
+    // ======================================
     // CREATE DATA BARU
-    // ========================================
+    // ======================================
 
-    const newPart: PartData = {
+    const newPart:
+      PartData = {
 
       id:
         Date.now(),
@@ -426,19 +1121,33 @@ export function usePartCodes() {
       detailProblem:
         form.detailProblem.trim(),
 
+      workArea:
+        form.workArea,
+
+      rackJis:
+        form.rackJis,
+
+      pic:
+        form.pic.trim(),
+
+      shift:
+        form.shift,
+
       createdAt:
         new Date().toISOString(),
 
     };
 
 
-    setData((previous) => [
+    setData(
+      (previous) => [
 
-      ...previous,
+        ...previous,
 
-      newPart,
+        newPart,
 
-    ]);
+      ]
+    );
 
 
     resetForm();
@@ -446,7 +1155,8 @@ export function usePartCodes() {
 
     return {
 
-      success: true,
+      success:
+        true,
 
       mode:
         "create" as const,
@@ -471,6 +1181,31 @@ export function usePartCodes() {
       part.id
     );
 
+
+    setWorkArea(
+      part.workArea ||
+      "RAK JIS"
+    );
+
+
+    setRackJis(
+      part.rackJis ||
+      "RAK JIS 1"
+    );
+
+
+    setPic(
+      part.pic ||
+      ""
+    );
+
+
+    setShift(
+      part.shift ||
+      "SHIFT 1"
+    );
+
+
     setForm({
 
       area:
@@ -485,17 +1220,36 @@ export function usePartCodes() {
           : "OK",
 
       stampDate:
-        part.stampDate || "",
+        part.stampDate ||
+        "",
 
       detailProblem:
-        part.detailProblem || "",
+        part.detailProblem ||
+        "",
+
+      workArea:
+        part.workArea ||
+        "RAK JIS",
+
+      rackJis:
+        part.rackJis ||
+        "RAK JIS 1",
+
+      pic:
+        part.pic ||
+        "",
+
+      shift:
+        part.shift ||
+        "SHIFT 1",
 
     });
 
 
     window.scrollTo({
 
-      top: 0,
+      top:
+        0,
 
       behavior:
         "smooth",
@@ -513,11 +1267,12 @@ export function usePartCodes() {
     id: number
   ) => {
 
-    setData((previous) =>
-      previous.filter(
-        (item) =>
-          item.id !== id
-      )
+    setData(
+      (previous) =>
+        previous.filter(
+          (item) =>
+            item.id !== id
+        )
     );
 
 
@@ -538,7 +1293,9 @@ export function usePartCodes() {
 
   const deleteAll = () => {
 
-    setData([]);
+    setData(
+      []
+    );
 
     resetForm();
 
@@ -557,6 +1314,7 @@ export function usePartCodes() {
           .trim()
           .toLowerCase();
 
+
       return data.filter(
         (item) => {
 
@@ -565,31 +1323,68 @@ export function usePartCodes() {
 
             item.fullCode
               .toLowerCase()
-              .includes(keyword) ||
+              .includes(
+                keyword
+              ) ||
 
             item.area
               .toLowerCase()
-              .includes(keyword) ||
+              .includes(
+                keyword
+              ) ||
 
             item.partCode
               .toLowerCase()
-              .includes(keyword) ||
+              .includes(
+                keyword
+              ) ||
 
             item.result
               .toLowerCase()
-              .includes(keyword) ||
+              .includes(
+                keyword
+              ) ||
 
             item.stampDate
               .toLowerCase()
-              .includes(keyword) ||
+              .includes(
+                keyword
+              ) ||
 
             item.detailProblem
               .toLowerCase()
-              .includes(keyword);
+              .includes(
+                keyword
+              ) ||
+
+            item.workArea
+              .toLowerCase()
+              .includes(
+                keyword
+              ) ||
+
+            item.rackJis
+              .toLowerCase()
+              .includes(
+                keyword
+              ) ||
+
+            item.pic
+              .toLowerCase()
+              .includes(
+                keyword
+              ) ||
+
+            item.shift
+              .toLowerCase()
+              .includes(
+                keyword
+              );
 
 
           const matchesArea =
-            filterArea === "ALL" ||
+            filterArea ===
+              "ALL" ||
             item.area ===
               filterArea;
 
@@ -613,28 +1408,59 @@ export function usePartCodes() {
     ]);
 
 
+  // ========================================
+  // RETURN
+  // ========================================
+
   return {
 
+    // Data
     data,
 
     filteredData,
 
+    // Form
     form,
 
     editingId,
 
+    // Search
     search,
 
     filterArea,
 
+    // Preview
     previewCode,
 
+    // Setting Area
+    workArea,
+
+    rackJis,
+
+    pic,
+
+    shift,
+
+    // Search setter
     setSearch,
 
     setFilterArea,
 
+    // Form
     updateForm,
 
+    // Setting
+    updateWorkArea,
+
+    updateRackJis,
+
+    updatePic,
+
+    updateShift,
+
+    saveAreaSetting,
+
+    // CRUD
     savePart,
 
     editPart,

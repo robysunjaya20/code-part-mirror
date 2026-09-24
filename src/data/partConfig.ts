@@ -16,3 +16,24 @@ export const AREA_OPTIONS = [
     prefix: "87620-I6",
   },
 ];
+
+export const WORK_AREA_OPTIONS = [
+  "RAK JIS",
+  "DOORSUB",
+] as const;
+
+export const RACK_JIS_OPTIONS = [
+  "RAK JIS 1",
+  "RAK JIS 2",
+  "RAK JIS 3",
+  "RAK JIS 4",
+  "RAK JIS 5",
+  "RAK JIS 6",
+  "RAK JIS 7",
+  "RAK JIS 8",
+] as const;
+
+export const SHIFT_OPTIONS = [
+  "SHIFT 1",
+  "SHIFT 2",
+] as const;
