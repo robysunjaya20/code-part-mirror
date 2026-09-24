@@ -4,7 +4,6 @@ type Props = {
   onConfirm: () => void;
 };
 
-
 export default function DeleteAllModal({
   dataCount,
   onClose,
@@ -33,7 +32,7 @@ export default function DeleteAllModal({
 
           <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
 
-            Semua{" "}
+            {" "}
 
             <strong className="font-extrabold text-slate-900">
               {dataCount}

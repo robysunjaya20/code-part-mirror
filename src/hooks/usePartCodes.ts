@@ -15,16 +15,12 @@ import type {
   PartFormData,
 } from "@/types/part";
 
-
-const STORAGE_KEY =
-  "part-code-data";
-
+const STORAGE_KEY = "part-code-data";
 
 export function usePartCodes() {
 
   const [data, setData] =
     useState<PartData[]>([]);
-
 
   const [isLoaded, setIsLoaded] =
     useState(false);
@@ -33,7 +29,9 @@ export function usePartCodes() {
     useState<PartFormData>({
       area: "SU2ID LH",
       partCode: "",
-      color: "NB9",
+      result: "OK",
+      stampDate: "",
+      detailProblem: "",
     });
 
   const [editingId, setEditingId] =
@@ -42,13 +40,13 @@ export function usePartCodes() {
   const [search, setSearch] =
     useState("");
 
-
   const [filterArea, setFilterArea] =
     useState("ALL");
 
 
-  const [filterColor, setFilterColor] =
-    useState("ALL");
+  // ========================================
+  // LOAD LOCAL STORAGE
+  // ========================================
 
   useEffect(() => {
 
@@ -59,16 +57,58 @@ export function usePartCodes() {
           STORAGE_KEY
         );
 
-
       if (saved) {
 
         const parsed =
           JSON.parse(saved);
 
-
         if (Array.isArray(parsed)) {
 
-          setData(parsed);
+          const migrated =
+            parsed.map((item) => {
+
+              let partCode =
+                item.partCode || "";
+
+              // Migrasi data lama:
+              // 020 + NB9 -> 020NB9
+              if (
+                item.color &&
+                /^\d{3}$/.test(partCode)
+              ) {
+
+                partCode =
+                  `${partCode}${item.color}`;
+
+              }
+
+              const result =
+                item.result === "NG"
+                  ? "NG"
+                  : "OK";
+
+              return {
+
+                ...item,
+
+                partCode,
+
+                fullCode:
+                  `${item.prefix || ""}${partCode}`,
+
+                result,
+
+                stampDate:
+                  item.stampDate || "",
+
+                detailProblem:
+                  item.detailProblem || "",
+
+              };
+
+            });
+
+          setData(migrated);
 
         }
 
@@ -83,17 +123,20 @@ export function usePartCodes() {
 
     }
 
-
     setIsLoaded(true);
 
   }, []);
+
+
+  // ========================================
+  // SAVE LOCAL STORAGE
+  // ========================================
 
   useEffect(() => {
 
     if (!isLoaded) {
       return;
     }
-
 
     try {
 
@@ -116,6 +159,11 @@ export function usePartCodes() {
     isLoaded,
   ]);
 
+
+  // ========================================
+  // PREVIEW FULL CODE
+  // ========================================
+
   const previewCode = useMemo(() => {
 
     const selectedArea =
@@ -124,19 +172,24 @@ export function usePartCodes() {
           item.label === form.area
       );
 
-
     if (!selectedArea) {
       return "";
     }
 
-
     return (
       selectedArea.prefix +
-      (form.partCode || "---") +
-      form.color
+      (form.partCode || "---")
     );
 
-  }, [form]);
+  }, [
+    form.area,
+    form.partCode,
+  ]);
+
+
+  // ========================================
+  // UPDATE FORM
+  // ========================================
 
   const updateForm = (
     field: keyof PartFormData,
@@ -150,31 +203,107 @@ export function usePartCodes() {
 
   };
 
+
+  // ========================================
+  // RESET FORM
+  // ========================================
+
   const resetForm = () => {
 
     setForm({
       area: "SU2ID LH",
       partCode: "",
-      color: "NB9",
+      result: "OK",
+      stampDate: "",
+      detailProblem: "",
     });
-
 
     setEditingId(null);
 
   };
 
+
+  // ========================================
+  // SAVE PART
+  // ========================================
+
   const savePart = () => {
 
-    if (!/^\d{3}$/.test(form.partCode)) {
+    // ----------------------------------------
+    // Validasi Kode Part
+    // ----------------------------------------
+
+    if (
+      !/^\d{3}[A-Z0-9]{3}$/.test(
+        form.partCode
+      )
+    ) {
 
       return {
+
         success: false,
+
         message:
-          "Kode part harus tepat 3 angka.",
+          "Kode Part harus terdiri dari 3 angka + 3 kode warna. Contoh: 020NB9.",
+
       };
 
     }
 
+
+    // ----------------------------------------
+    // Validasi Result
+    // ----------------------------------------
+
+    if (
+      form.result !== "OK" &&
+      form.result !== "NG"
+    ) {
+
+      return {
+
+        success: false,
+
+        message:
+          "Result harus dipilih OK atau NG.",
+
+      };
+
+    }
+
+
+    // ----------------------------------------
+    // Validasi Stamp Date / LOT
+    // ----------------------------------------
+
+    if (
+      !/^[A-Z]\d{4}$/.test(
+        form.stampDate
+      )
+    ) {
+
+      return {
+
+        success: false,
+
+        message:
+          "STAMP DATE / LOT harus terdiri dari 1 huruf dan 4 angka. Contoh: A1234.",
+
+      };
+
+    }
+
+
+    // ========================================
+    // DETAIL PROBLEM TIDAK WAJIB
+    // ========================================
+    // Tidak ada validasi di sini.
+    // Boleh kosong.
+
+
+    // ----------------------------------------
+    // Cari Model
+    // ----------------------------------------
 
     const selectedArea =
       AREA_OPTIONS.find(
@@ -182,22 +311,32 @@ export function usePartCodes() {
           item.label === form.area
       );
 
-
     if (!selectedArea) {
 
       return {
+
         success: false,
+
         message:
-          "Area tidak ditemukan.",
+          "Model tidak ditemukan.",
+
       };
 
     }
 
 
+    // ----------------------------------------
+    // Generate Full Code
+    // ----------------------------------------
+
     const fullCode =
       selectedArea.prefix +
-      form.partCode +
-      form.color;
+      form.partCode;
+
+
+    // ========================================
+    // UPDATE DATA
+    // ========================================
 
     if (editingId !== null) {
 
@@ -208,9 +347,11 @@ export function usePartCodes() {
           item.id === editingId
 
             ? {
+
                 ...item,
 
-                area: form.area,
+                area:
+                  form.area,
 
                 prefix:
                   selectedArea.prefix,
@@ -218,10 +359,17 @@ export function usePartCodes() {
                 partCode:
                   form.partCode,
 
-                color:
-                  form.color,
-
                 fullCode,
+
+                result:
+                  form.result,
+
+                stampDate:
+                  form.stampDate,
+
+                detailProblem:
+                  form.detailProblem.trim(),
+
               }
 
             : item
@@ -235,19 +383,31 @@ export function usePartCodes() {
 
 
       return {
+
         success: true,
-        mode: "update" as const,
+
+        mode:
+          "update" as const,
+
         message:
           "Data berhasil diperbarui.",
+
       };
 
     }
 
+
+    // ========================================
+    // CREATE DATA BARU
+    // ========================================
+
     const newPart: PartData = {
 
-      id: Date.now(),
+      id:
+        Date.now(),
 
-      area: form.area,
+      area:
+        form.area,
 
       prefix:
         selectedArea.prefix,
@@ -255,10 +415,16 @@ export function usePartCodes() {
       partCode:
         form.partCode,
 
-      color:
-        form.color,
-
       fullCode,
+
+      result:
+        form.result,
+
+      stampDate:
+        form.stampDate,
+
+      detailProblem:
+        form.detailProblem.trim(),
 
       createdAt:
         new Date().toISOString(),
@@ -267,8 +433,11 @@ export function usePartCodes() {
 
 
     setData((previous) => [
+
       ...previous,
+
       newPart,
+
     ]);
 
 
@@ -276,34 +445,69 @@ export function usePartCodes() {
 
 
     return {
+
       success: true,
-      mode: "create" as const,
+
+      mode:
+        "create" as const,
+
       message:
         "Data berhasil ditambahkan.",
+
     };
 
   };
+
+
+  // ========================================
+  // EDIT PART
+  // ========================================
 
   const editPart = (
     part: PartData
   ) => {
 
-    setEditingId(part.id);
-
+    setEditingId(
+      part.id
+    );
 
     setForm({
-      area: part.area,
-      partCode: part.partCode,
-      color: part.color,
+
+      area:
+        part.area,
+
+      partCode:
+        part.partCode,
+
+      result:
+        part.result === "NG"
+          ? "NG"
+          : "OK",
+
+      stampDate:
+        part.stampDate || "",
+
+      detailProblem:
+        part.detailProblem || "",
+
     });
 
 
     window.scrollTo({
+
       top: 0,
-      behavior: "smooth",
+
+      behavior:
+        "smooth",
+
     });
 
   };
+
+
+  // ========================================
+  // DELETE PART
+  // ========================================
 
   const deletePart = (
     id: number
@@ -317,13 +521,20 @@ export function usePartCodes() {
     );
 
 
-    if (editingId === id) {
+    if (
+      editingId === id
+    ) {
 
       resetForm();
 
     }
 
   };
+
+
+  // ========================================
+  // DELETE ALL
+  // ========================================
 
   const deleteAll = () => {
 
@@ -333,6 +544,11 @@ export function usePartCodes() {
 
   };
 
+
+  // ========================================
+  // FILTER DATA
+  // ========================================
+
   const filteredData =
     useMemo(() => {
 
@@ -341,19 +557,33 @@ export function usePartCodes() {
           .trim()
           .toLowerCase();
 
-
       return data.filter(
         (item) => {
 
           const matchesSearch =
             keyword === "" ||
+
             item.fullCode
               .toLowerCase()
               .includes(keyword) ||
+
             item.area
               .toLowerCase()
               .includes(keyword) ||
+
             item.partCode
+              .toLowerCase()
+              .includes(keyword) ||
+
+            item.result
+              .toLowerCase()
+              .includes(keyword) ||
+
+            item.stampDate
+              .toLowerCase()
+              .includes(keyword) ||
+
+            item.detailProblem
               .toLowerCase()
               .includes(keyword);
 
@@ -364,29 +594,24 @@ export function usePartCodes() {
               filterArea;
 
 
-          const matchesColor =
-            filterColor === "ALL" ||
-            item.color ===
-              filterColor;
-
-
           return (
             matchesSearch &&
-            matchesArea &&
-            matchesColor
+            matchesArea
           );
 
         }
       );
 
     }, [
+
       data,
+
       search,
+
       filterArea,
-      filterColor,
+
     ]);
 
-  // RETURN
 
   return {
 
@@ -402,15 +627,11 @@ export function usePartCodes() {
 
     filterArea,
 
-    filterColor,
-
     previewCode,
 
     setSearch,
 
     setFilterArea,
-
-    setFilterColor,
 
     updateForm,
 

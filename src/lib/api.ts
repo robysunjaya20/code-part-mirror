@@ -1,7 +1,7 @@
 import type { PartData } from "@/types/part";
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbyeAqqo4ae5GK9rtKmkBCwqTK2CMd1h5lMj4uh7a2pr3-DlT9eyQAvrNqp_8svX8e7RxQ/exec";
+  "https://script.google.com/macros/s/AKfycby1njEQJwRZfxOrTLP7_iCJvd-Ql7BkWZU8gjTNSbSHpfJwMSn5tAzT8zNVWcUbN7rWnw/exec";
 
 export async function syncAllToGoogleSheets(
   data: PartData[]

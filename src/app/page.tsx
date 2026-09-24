@@ -29,6 +29,7 @@ import {
   syncAllToGoogleSheets,
 } from "@/lib/api";
 
+
 export default function Home() {
 
   const {
@@ -45,15 +46,11 @@ export default function Home() {
 
     filterArea,
 
-    filterColor,
-
     previewCode,
 
     setSearch,
 
     setFilterArea,
-
-    setFilterColor,
 
     updateForm,
 
@@ -69,6 +66,7 @@ export default function Home() {
 
   } = usePartCodes();
 
+
   const [
     showSyncModal,
     setShowSyncModal,
@@ -80,6 +78,7 @@ export default function Home() {
     setShowDeleteAllModal,
   ] = useState(false);
 
+
   const [
     isSyncing,
     setIsSyncing,
@@ -90,6 +89,7 @@ export default function Home() {
     lastSync,
     setLastSync,
   ] = useState<string | null>(null);
+
 
   const [
     toast,
@@ -113,7 +113,9 @@ export default function Home() {
       setToast({
         message:
           result.message,
-        type: "error",
+
+        type:
+          "error",
       });
 
       return;
@@ -124,7 +126,9 @@ export default function Home() {
     setToast({
       message:
         result.message,
-      type: "success",
+
+      type:
+        "success",
     });
 
   };
@@ -139,7 +143,9 @@ export default function Home() {
     setToast({
       message:
         "Data berhasil dihapus.",
-      type: "success",
+
+      type:
+        "success",
     });
 
   };
@@ -148,13 +154,16 @@ export default function Home() {
 
     deleteAll();
 
-    setShowDeleteAllModal(false);
-
+    setShowDeleteAllModal(
+      false
+    );
 
     setToast({
       message:
         "Semua data berhasil dihapus.",
-      type: "success",
+
+      type:
+        "success",
     });
 
   };
@@ -166,13 +175,14 @@ export default function Home() {
       setToast({
         message:
           "Belum ada data lokal yang bisa disimpan.",
-        type: "info",
+
+        type:
+          "info",
       });
 
       return;
 
     }
-
 
     setShowSyncModal(true);
 
@@ -181,15 +191,12 @@ export default function Home() {
   const handleSync = async () => {
 
     try {
-
       setIsSyncing(true);
-
 
       const result =
         await syncAllToGoogleSheets(
           data
         );
-
 
       setLastSync(
         new Date().toLocaleString(
@@ -197,14 +204,16 @@ export default function Home() {
         )
       );
 
-
-      setShowSyncModal(false);
-
+      setShowSyncModal(
+        false
+      );
 
       setToast({
         message:
           `Berhasil menyimpan ${result.count} data ke Google Sheets.`,
-        type: "success",
+
+        type:
+          "success",
       });
 
 
@@ -213,17 +222,19 @@ export default function Home() {
       console.error(error);
 
 
-      setShowSyncModal(false);
-
+      setShowSyncModal(
+        false
+      );
 
       setToast({
         message:
           error instanceof Error
             ? error.message
             : "Gagal menyimpan data ke Google Sheets.",
-        type: "error",
-      });
 
+        type:
+          "error",
+      });
 
     } finally {
 
@@ -233,54 +244,50 @@ export default function Home() {
 
   };
 
+
   return (
 
     <div className="min-h-screen bg-slate-100">
 
-
-      {/* HEADER */}
-
       <Header />
-
-
-      {/* MAIN */}
 
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
 
-
-        {/* STATS */}
-
         <StatsCards
-          data={data}
+          data={
+            data
+          }
+
           displayed={
             filteredData.length
           }
         />
 
-
-        {/* FORM */}
-
         <PartForm
-          form={form}
+          form={
+            form
+          }
+
           editing={
             editingId !== null
           }
+
           previewCode={
             previewCode
           }
+
           onChange={
             updateForm
           }
+
           onSubmit={
             handleSavePart
           }
+
           onCancel={
             resetForm
           }
         />
-
-
-        {/* LIST */}
 
         <PartList
           data={
@@ -295,20 +302,12 @@ export default function Home() {
             filterArea
           }
 
-          filterColor={
-            filterColor
-          }
-
           onSearch={
             setSearch
           }
 
           onFilterArea={
             setFilterArea
-          }
-
-          onFilterColor={
-            setFilterColor
           }
 
           onEdit={
@@ -333,26 +332,22 @@ export default function Home() {
               "ALL"
             );
 
-            setFilterColor(
-              "ALL"
-            );
-
           }}
         />
-
-
-        {/* GOOGLE SHEETS */}
 
         <GoogleSheetsCard
           dataCount={
             data.length
           }
+
           isSyncing={
             isSyncing
           }
+
           lastSync={
             lastSync
           }
+
           onSync={
             openSyncModal
           }
@@ -360,22 +355,22 @@ export default function Home() {
 
       </main>
 
-
-      {/* FOOTER */}
-
       <Footer />
 
-      {showSyncModal && !isSyncing && (
+      {showSyncModal &&
+        !isSyncing && (
 
         <SyncModal
           dataCount={
             data.length
           }
+
           onClose={() =>
             setShowSyncModal(
               false
             )
           }
+
           onConfirm={
             handleSync
           }
@@ -435,11 +430,13 @@ export default function Home() {
           dataCount={
             data.length
           }
+
           onClose={() =>
             setShowDeleteAllModal(
               false
             )
           }
+
           onConfirm={
             handleDeleteAll
           }
@@ -453,12 +450,15 @@ export default function Home() {
           message={
             toast.message
           }
+
           type={
             toast.type
           }
+
           onClose={() =>
             setToast(null)
           }
+
         />
 
       )}

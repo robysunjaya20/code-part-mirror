@@ -16,16 +16,3 @@ export const AREA_OPTIONS = [
     prefix: "87620-I6",
   },
 ];
-
-export const COLOR_OPTIONS = [
-  "NB9",
-  "WTW",
-  "R4G",
-  "SK8",
-  "WC9",
-  "WR7",
-  "TWM",
-  "W3T",
-  "SE8",
-  "NX3",
-];

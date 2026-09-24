@@ -1,15 +1,21 @@
+export type PartResult = "OK" | "NG";
+
 export type PartData = {
   id: number;
   area: string;
   prefix: string;
   partCode: string;
-  color: string;
   fullCode: string;
+  result: PartResult;
+  stampDate: string;
+  detailProblem: string;
   createdAt: string;
 };
 
 export type PartFormData = {
   area: string;
   partCode: string;
-  color: string;
+  result: PartResult;
+  stampDate: string;
+  detailProblem: string;
 };

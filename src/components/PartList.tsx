@@ -1,28 +1,23 @@
 import {
   AREA_OPTIONS,
-  COLOR_OPTIONS,
 } from "@/data/partConfig";
 
 import type {
   PartData,
 } from "@/types/part";
 
+
 type Props = {
   data: PartData[];
 
   search: string;
   filterArea: string;
-  filterColor: string;
 
   onSearch: (
     value: string
   ) => void;
 
   onFilterArea: (
-    value: string
-  ) => void;
-
-  onFilterColor: (
     value: string
   ) => void;
 
@@ -44,10 +39,8 @@ export default function PartList({
   data,
   search,
   filterArea,
-  filterColor,
   onSearch,
   onFilterArea,
-  onFilterColor,
   onEdit,
   onDelete,
   onDeleteAll,
@@ -55,15 +48,17 @@ export default function PartList({
 }: Props) {
 
   const hasFilter =
-    search ||
-    filterArea !== "ALL" ||
-    filterColor !== "ALL";
+    search.trim() !== "" ||
+    filterArea !== "ALL";
 
 
   return (
     <section className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-      {/* HEADER */}
+
+      {/* =========================
+          HEADER
+      ========================= */}
 
       <div className="border-b border-slate-200 p-5 sm:p-6">
 
@@ -85,6 +80,7 @@ export default function PartList({
           {data.length > 0 && (
 
             <button
+              type="button"
               onClick={onDeleteAll}
               className="rounded-xl border border-red-300 bg-red-50 px-4 py-2.5 text-sm font-bold text-red-700 transition hover:bg-red-100"
             >
@@ -96,17 +92,23 @@ export default function PartList({
         </div>
 
 
-        {/* FILTER */}
+        {/* =========================
+            FILTER
+        ========================= */}
 
-        <div className="mt-5 grid grid-cols-2 gap-3">
+        <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
 
-          {/* SEARCH */}
 
-          <div className="col-span-2">
+          {/* =========================
+              SEARCH
+          ========================= */}
+
+          <div className="sm:col-span-2">
 
             <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-600">
-              Cari
+              Cari Data
             </label>
+
 
             <div className="relative">
 
@@ -114,13 +116,16 @@ export default function PartList({
                 🔍
               </span>
 
+
               <input
                 type="text"
                 value={search}
                 onChange={(e) =>
-                  onSearch(e.target.value)
+                  onSearch(
+                    e.target.value
+                  )
                 }
-                placeholder="Cari kode part..."
+                placeholder="Cari Kode Part, LOT, Model, Result, atau Detail Problem..."
                 className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-10 pr-4 text-sm font-medium text-slate-800 outline-none placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
               />
 
@@ -129,68 +134,44 @@ export default function PartList({
           </div>
 
 
-          {/* FILTER AREA */}
+          {/* =========================
+              FILTER MODEL
+          ========================= */}
 
           <div className="min-w-0">
 
             <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-600">
-              Filter Area
+              Filter Model
             </label>
+
 
             <select
               value={filterArea}
               onChange={(e) =>
-                onFilterArea(e.target.value)
+                onFilterArea(
+                  e.target.value
+                )
               }
               className="w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 outline-none hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 sm:px-4"
             >
 
               <option value="ALL">
-                Semua Area
+                Semua Model
               </option>
 
-              {AREA_OPTIONS.map((item) => (
-                <option
-                  key={item.label}
-                  value={item.label}
-                >
-                  {item.label}
-                </option>
-              ))}
 
-            </select>
+              {AREA_OPTIONS.map(
+                (item) => (
 
-          </div>
+                  <option
+                    key={item.label}
+                    value={item.label}
+                  >
+                    {item.label}
+                  </option>
 
-
-          {/* FILTER WARNA */}
-
-          <div className="min-w-0">
-
-            <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-600">
-              Filter Warna
-            </label>
-
-            <select
-              value={filterColor}
-              onChange={(e) =>
-                onFilterColor(e.target.value)
-              }
-              className="w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 outline-none hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 sm:px-4"
-            >
-
-              <option value="ALL">
-                Semua Warna
-              </option>
-
-              {COLOR_OPTIONS.map((item) => (
-                <option
-                  key={item}
-                  value={item}
-                >
-                  {item}
-                </option>
-              ))}
+                )
+              )}
 
             </select>
 
@@ -199,9 +180,14 @@ export default function PartList({
         </div>
 
 
+        {/* =========================
+            RESET FILTER
+        ========================= */}
+
         {hasFilter && (
 
           <button
+            type="button"
             onClick={onClearFilter}
             className="mt-4 text-sm font-bold text-blue-600 hover:text-blue-800"
           >
@@ -213,9 +199,12 @@ export default function PartList({
       </div>
 
 
-      {/* LIST */}
+      {/* =========================
+          LIST
+      ========================= */}
 
       <div className="p-5 sm:p-6">
+
 
         {data.length === 0 ? (
 
@@ -237,11 +226,18 @@ export default function PartList({
                   className="rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-blue-300 hover:bg-blue-50/30 hover:shadow-sm"
                 >
 
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-                    {/* INFO */}
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+
+
+                    {/* =========================
+                        INFO
+                    ========================= */}
 
                     <div className="min-w-0">
+
+
+                      {/* FULL CODE */}
 
                       <div className="flex items-center gap-3">
 
@@ -257,30 +253,81 @@ export default function PartList({
                       </div>
 
 
+                      {/* DETAILS */}
+
                       <div className="mt-3 flex flex-wrap gap-2 pl-11">
 
+
+                        {/* MODEL */}
+
                         <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800">
-                          {item.area}
+                          Model: {item.area}
                         </span>
 
-                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+
+                        {/* KODE PART */}
+
+                        <span className="rounded-full bg-slate-100 px-3 py-1 font-mono text-xs font-bold text-slate-700">
                           Part: {item.partCode}
                         </span>
 
-                        <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-800">
-                          {item.color}
+
+                        {/* RESULT */}
+
+                        <span
+                          className={
+                            item.result === "OK"
+                              ? "rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700"
+                              : "rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700"
+                          }
+                        >
+                          Result: {item.result}
+                        </span>
+
+
+                        {/* STAMP DATE / LOT */}
+
+                        <span className="rounded-full bg-amber-100 px-3 py-1 font-mono text-xs font-bold text-amber-800">
+                          LOT: {item.stampDate}
                         </span>
 
                       </div>
 
+
+                      {/* =========================
+                          DETAIL PROBLEM
+                      ========================= */}
+
+                      {item.detailProblem?.trim() && (
+
+                        <div className="mt-3 ml-11 rounded-xl border border-slate-200 bg-slate-50 p-3">
+
+                          <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                            Detail Problem
+                          </p>
+
+                          <p className="mt-1 whitespace-pre-wrap break-words text-sm font-medium text-slate-700">
+                            {item.detailProblem}
+                          </p>
+
+                        </div>
+
+                      )}
+
                     </div>
 
 
-                    {/* ACTION */}
+                    {/* =========================
+                        ACTION
+                    ========================= */}
 
                     <div className="flex shrink-0 gap-2 pl-11 sm:pl-0">
 
+
+                      {/* EDIT */}
+
                       <button
+                        type="button"
                         onClick={() =>
                           onEdit(item)
                         }
@@ -290,7 +337,10 @@ export default function PartList({
                       </button>
 
 
+                      {/* DELETE */}
+
                       <button
+                        type="button"
                         onClick={() =>
                           onDelete(
                             item.id
@@ -321,10 +371,6 @@ export default function PartList({
 }
 
 
-// ========================================
-// EMPTY STATE
-// ========================================
-
 function EmptyState({
   title,
   description,
@@ -336,20 +382,26 @@ function EmptyState({
 }) {
 
   return (
+
     <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 py-14 text-center">
+
 
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-2xl shadow-sm">
         {icon}
       </div>
 
+
       <h3 className="mt-4 text-base font-bold text-slate-700">
         {title}
       </h3>
+
 
       <p className="mt-1 text-sm font-medium text-slate-500">
         {description}
       </p>
 
+
     </div>
+
   );
 }
