@@ -53,7 +53,7 @@ export default function PartList({
 
 
   return (
-    <section className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <section className="mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
       <div className="border-b border-slate-200 p-5 sm:p-6">
 
@@ -65,7 +65,7 @@ export default function PartList({
               Data Part Code
             </h2>
 
-            <p className="mt-1 text-sm font-medium text-slate-500">
+            <p className="mt-1 text-xs font-medium text-slate-500">
               Kelola kode part yang tersimpan di lokal.
             </p>
 
@@ -77,7 +77,7 @@ export default function PartList({
             <button
               type="button"
               onClick={onDeleteAll}
-              className="rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-sm font-bold text-red-700 transition hover:bg-red-100"
+              className="rounded-xl border border-red-300 bg-red-50 px-2 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100"
             >
               Hapus Semua
             </button>
@@ -86,13 +86,13 @@ export default function PartList({
 
         </div>
 
-        <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
 
           {/* SEARCH */}
 
-          <div className="sm:col-span-2">
+          <div className="sm:col-span-1">
 
-            <label className="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-600">
+            <label className="mb-1 block text-[11px] font-bold uppercase tracking-wide text-slate-600">
               Cari Data
             </label>
 
@@ -113,7 +113,7 @@ export default function PartList({
                   )
                 }
                 placeholder="Cari Kode Part, LOT, Model, Area, Rak, PIC, Shift, atau Detail Problem..."
-                className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-10 pr-4 text-sm font-medium text-slate-800 outline-none placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+                className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-10 pr-4 text-xs font-medium text-slate-800 outline-none placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
               />
 
             </div>
@@ -125,7 +125,7 @@ export default function PartList({
 
           <div className="min-w-0">
 
-            <label className="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-600">
+            <label className="mb-1 block text-[11px] font-bold uppercase tracking-wide text-slate-600">
               Filter Model
             </label>
 
@@ -137,7 +137,7 @@ export default function PartList({
                   e.target.value
                 )
               }
-              className="w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 outline-none hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 sm:px-4"
+              className="w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-3 text-xs font-semibold text-slate-800 outline-none hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 sm:px-4"
             >
 
               <option value="ALL">
@@ -172,7 +172,7 @@ export default function PartList({
           <button
             type="button"
             onClick={onClearFilter}
-            className="mt-4 text-sm font-bold text-blue-600 hover:text-blue-800"
+            className="mt-2 text-xs font-bold text-blue-600 hover:text-blue-800"
           >
             ↻ Reset Filter
           </button>
@@ -193,17 +193,17 @@ export default function PartList({
 
         ) : (
 
-          <div className="space-y-3">
+          <div className="space-y-1">
 
             {[...data].reverse().map(
               (item, index) => (
             
                 <div
                   key={item.id}
-                  className="rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-blue-300 hover:bg-blue-50/30 hover:shadow-sm"
+                  className="rounded-2xl border border-slate-200 bg-white p-2 transition hover:border-blue-300 hover:bg-blue-50/30 hover:shadow-sm"
                 >
 
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
 
 
                     <div className="min-w-0">
@@ -212,12 +212,12 @@ export default function PartList({
 
                       <div className="flex items-center gap-3">
 
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-xs font-bold text-slate-600">
+                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-[11px] font-bold text-slate-600">
                           {data.length - index}
                         </div>
 
 
-                        <p className="break-all font-mono text-lg font-extrabold text-slate-900">
+                        <p className="break-all font-mono text-xs font-extrabold text-slate-900">
                           {item.fullCode}
                         </p>
 
@@ -226,18 +226,18 @@ export default function PartList({
 
                       {/* DETAILS */}
 
-                      <div className="mt-3 flex flex-wrap gap-2 pl-11">
+                      <div className="mt-3 flex flex-wrap gap-1.5 pl-9">
 
                         {/* MODEL */}
 
-                        <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800">
+                        <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-bold text-blue-800">
                           Model: {item.area}
                         </span>
 
 
                         {/* KODE PART */}
 
-                        <span className="rounded-full bg-slate-100 px-3 py-1 font-mono text-xs font-bold text-slate-700">
+                        <span className="rounded-full bg-slate-100 px-3 py-0.5 font-mono text-[11px] font-bold text-slate-700">
                           Part: {item.partCode}
                         </span>
 
@@ -247,8 +247,8 @@ export default function PartList({
                         <span
                           className={
                             item.result === "OK"
-                              ? "rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700"
-                              : "rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700"
+                              ? "rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold text-emerald-700"
+                              : "rounded-full bg-red-100 px-3 py-1 text-[11px] font-bold text-red-700"
                           }
                         >
                           Result: {item.result}
@@ -257,7 +257,7 @@ export default function PartList({
 
                         {/* STAMP DATE / LOT */}
 
-                        <span className="rounded-full bg-amber-100 px-3 py-1 font-mono text-xs font-bold text-amber-800">
+                        <span className="rounded-full bg-amber-100 px-3 py-1 font-mono text-[11px] font-bold text-amber-800">
                           LOT: {item.stampDate || "-"}
                         </span>
 
@@ -268,9 +268,9 @@ export default function PartList({
                           AREA / RAK / PIC / SHIFT
                       ========================= */}
 
-                      <div className="mt-3 ml-11 rounded-xl border border-indigo-100 bg-indigo-50 p-3">
+                      <div className="mt-2 ml-9 rounded-xl border border-indigo-100 bg-indigo-50 p-2">
 
-                        <div className="flex flex-wrap gap-x-5 gap-y-2">
+                        <div className="flex flex-wrap gap-x-2 gap-y-1">
 
                           {/* AREA */}
 
@@ -279,7 +279,7 @@ export default function PartList({
                               Area
                             </p>
 
-                            <p className="text-sm font-bold text-indigo-900">
+                            <p className="text-xs font-bold text-indigo-900">
                               {item.workArea || "-"}
                             </p>
                           </div>
@@ -292,7 +292,7 @@ export default function PartList({
                               Rak JIS
                             </p>
 
-                            <p className="text-sm font-bold text-indigo-900">
+                            <p className="text-xs font-bold text-indigo-900">
                               {item.rackJis || "-"}
                             </p>
                           </div>
@@ -305,7 +305,7 @@ export default function PartList({
                               PIC
                             </p>
 
-                            <p className="text-sm font-bold text-indigo-900">
+                            <p className="text-xs font-bold text-indigo-900">
                               {item.pic || "-"}
                             </p>
                           </div>
@@ -318,7 +318,7 @@ export default function PartList({
                               Shift
                             </p>
 
-                            <p className="text-sm font-bold text-indigo-900">
+                            <p className="text-xs font-bold text-indigo-900">
                               {item.shift || "-"}
                             </p>
                           </div>
@@ -334,13 +334,13 @@ export default function PartList({
 
                       {item.detailProblem?.trim() && (
 
-                        <div className="mt-3 ml-11 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                        <div className="mt-2 ml-9 rounded-xl border border-slate-200 bg-slate-50 p-2">
 
                           <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
                             Detail Problem
                           </p>
 
-                          <p className="mt-1 whitespace-pre-wrap break-words text-sm font-medium text-slate-700">
+                          <p className="mt-1 whitespace-pre-wrap break-words text-xs font-medium text-slate-700">
                             {item.detailProblem}
                           </p>
 
@@ -364,7 +364,7 @@ export default function PartList({
                         onClick={() =>
                           onEdit(item)
                         }
-                        className="rounded-xl border border-blue-300 bg-blue-50 px-4 py-2.5 text-sm font-bold text-blue-700 transition hover:bg-blue-100"
+                        className="rounded-lg border border-blue-300 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 transition hover:bg-blue-100"
                       >
                         Edit
                       </button>
@@ -379,7 +379,7 @@ export default function PartList({
                             item.id
                           )
                         }
-                        className="rounded-xl border border-red-300 bg-red-50 px-4 py-2.5 text-sm font-bold text-red-700 transition hover:bg-red-100"
+                        className="rounded-xl border border-red-300 bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 transition hover:bg-red-100"
                       >
                         Hapus
                       </button>
@@ -428,7 +428,7 @@ function EmptyState({
       </h3>
 
 
-      <p className="mt-1 text-sm font-medium text-slate-500">
+      <p className="mt-1 text-xs font-medium text-slate-500">
         {description}
       </p>
 

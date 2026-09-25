@@ -9,15 +9,12 @@ type Props = {
   onClose: () => void;
 };
 
-
 export default function Toast({
   message,
   type = "success",
   onClose,
 }: Props) {
-
   const styles = {
-
     success: {
       wrapper:
         "border-emerald-200 bg-emerald-50",
@@ -53,34 +50,25 @@ export default function Toast({
         "text-blue-700",
       symbol: "i",
     },
-
   };
 
-
-  const style =
-    styles[type];
-
+  const style = styles[type];
 
   return (
-    <div className="fixed right-4 top-4 z-[100] w-[calc(100%-2rem)] max-w-sm animate-[slideIn_0.25s_ease-out]">
-
+    <div className="fixed right-3 top-3 z-[100] w-[calc(100%-1.5rem)] max-w-xs animate-[slideIn_0.25s_ease-out]">
       <div
-        className={`rounded-2xl border p-4 shadow-xl ${style.wrapper}`}
+        className={`rounded-xl border p-3 shadow-lg ${style.wrapper}`}
       >
-
-        <div className="flex items-start gap-3">
-
+        <div className="flex items-start gap-2">
           <div
-            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-extrabold ${style.icon}`}
+            className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-extrabold ${style.icon}`}
           >
             {style.symbol}
           </div>
 
-
           <div className="min-w-0 flex-1">
-
             <p
-              className={`text-sm font-extrabold ${style.title}`}
+              className={`text-xs font-extrabold ${style.title}`}
             >
               {type === "success"
                 ? "Berhasil"
@@ -90,26 +78,22 @@ export default function Toast({
             </p>
 
             <p
-              className={`mt-1 text-sm font-medium leading-relaxed ${style.message}`}
+              className={`mt-0.5 text-xs font-medium leading-relaxed ${style.message}`}
             >
               {message}
             </p>
-
           </div>
 
-
           <button
+            type="button"
             onClick={onClose}
-            className="text-lg font-semibold text-slate-400 hover:text-slate-700"
+            className="text-base font-semibold leading-none text-slate-400 transition hover:text-slate-700"
             aria-label="Tutup"
           >
             ×
           </button>
-
         </div>
-
       </div>
-
     </div>
   );
 }

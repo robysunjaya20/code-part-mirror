@@ -9,18 +9,13 @@ export default function StatsCards({
   data,
   displayed,
 }: Props) {
+  const su2id = data.filter((item) =>
+    item.area.startsWith("SU2ID")
+  ).length;
 
-  const su2id =
-    data.filter((item) =>
-      item.area.startsWith("SU2ID")
-    ).length;
-
-
-  const ks =
-    data.filter((item) =>
-      item.area.startsWith("KS")
-    ).length;
-
+  const ks = data.filter((item) =>
+    item.area.startsWith("KS")
+  ).length;
 
   const cards = [
     {
@@ -60,31 +55,24 @@ export default function StatsCards({
     },
   ];
 
-
   return (
-    <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-
+    <div className="mb-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
       {cards.map((card) => (
-
         <div
           key={card.title}
-          className={`rounded-2xl border p-4 shadow-sm ${card.className}`}
+          className={`rounded-xl border p-3 shadow-sm ${card.className}`}
         >
-
           <p
-            className={`text-xs font-bold uppercase tracking-wide ${card.labelClass}`}
+            className={`text-[10px] font-bold uppercase tracking-wide ${card.labelClass}`}
           >
             {card.title}
           </p>
 
-          <p className="mt-1 text-2xl font-extrabold">
+          <p className="mt-0.5 text-xl font-extrabold">
             {card.value}
           </p>
-
         </div>
-
       ))}
-
     </div>
   );
 }
