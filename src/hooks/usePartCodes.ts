@@ -18,209 +18,141 @@ import type {
   ShiftType,
 } from "@/types/part";
 
-const STORAGE_KEY =
-  "part-code-data";
+const STORAGE_KEY = "part-code-data";
 
-const SETTING_STORAGE_KEY =
-  "part-area-setting";
-
+const SETTING_STORAGE_KEY = "part-area-setting";
 
 export function usePartCodes() {
+  const [data, setData] = useState<PartData[]>([]);
 
-  const [data, setData] =
-    useState<PartData[]>([]);
-
-  const [isLoaded, setIsLoaded] =
-    useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const [workArea, setWorkArea] =
-    useState<AreaSetting>(
-      "RAK JIS"
-    );
-
+    useState<AreaSetting>("RAK JIS");
 
   const [rackJis, setRackJis] =
-    useState<RackJisType | "">(
-      "RAK JIS 1"
-    );
+    useState<RackJisType | "">("RAK JIS 1");
 
-
-  const [pic, setPic] =
-    useState("");
-
+  const [pic, setPic] = useState("");
 
   const [shift, setShift] =
-    useState<ShiftType>(
-      "SHIFT 1"
-    );
+    useState<ShiftType>("SHIFT 1");
 
   const [form, setForm] =
     useState<PartFormData>({
-
-      area:
-        "SU2ID LH",
-
-      partCode:
-        "",
-
-      result:
-        "OK",
-
-      stampDate:
-        "",
-
-      detailProblem:
-        "",
-
-      workArea:
-        "RAK JIS",
-
-      rackJis:
-        "RAK JIS 1",
-
-      pic:
-        "",
-
-      shift:
-        "SHIFT 1",
-
+      area: "SU2ID LH",
+      partCode: "",
+      result: "OK",
+      stampDate: "",
+      detailProblem: "",
+      workArea: "RAK JIS",
+      rackJis: "RAK JIS 1",
+      pic: "",
+      shift: "SHIFT 1",
     });
 
   const [editingId, setEditingId] =
-    useState<number | null>(
-      null
-    );
+    useState<number | null>(null);
 
-  const [search, setSearch] =
-    useState("");
-
+  const [search, setSearch] = useState("");
 
   const [filterArea, setFilterArea] =
     useState("ALL");
 
+
   useEffect(() => {
-
     try {
-
       const saved =
-        localStorage.getItem(
-          STORAGE_KEY
-        );
-
+        localStorage.getItem(STORAGE_KEY);
 
       if (saved) {
+        const parsed = JSON.parse(saved);
 
-        const parsed =
-          JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          const migrated = parsed.map((item) => {
+            let partCode =
+              item.partCode || "";
 
+            /*
+            Migrasi data lama jika masih
+            memiliki field color.
+            */
+            if (
+              item.color &&
+              /^\d{3}$/.test(partCode)
+            ) {
+              partCode =
+                `${partCode}${item.color}`;
+            }
 
-        if (
-          Array.isArray(parsed)
-        ) {
+            const result =
+              item.result === "NG"
+                ? "NG"
+                : "OK";
 
-          const migrated =
-            parsed.map(
-              (item) => {
+            const migratedWorkArea: AreaSetting =
+              item.workArea === "DOORSUB"
+                ? "DOORSUB"
+                : "RAK JIS";
 
-                let partCode =
-                  item.partCode || "";
+            const migratedRack:
+              RackJisType | "" =
+              item.rackJis || "";
 
-                if (
-                  item.color &&
-                  /^\d{3}$/.test(
-                    partCode
-                  )
-                ) {
+            /*
+            HANYA ADA SHIFT 1 DAN SHIFT 2
+            */
+            const migratedShift: ShiftType =
+              item.shift === "SHIFT 2"
+                ? "SHIFT 2"
+                : "SHIFT 1";
 
-                  partCode =
-                    `${partCode}${item.color}`;
+            return {
+              ...item,
 
-                }
+              partCode,
 
-                const result =
-                  item.result === "NG"
-                    ? "NG"
-                    : "OK";
+              fullCode:
+                `${item.prefix || ""}${partCode}`,
 
-                const migratedWorkArea:
-                  AreaSetting =
-                  item.workArea ===
-                  "DOORSUB"
-                    ? "DOORSUB"
-                    : "RAK JIS";
+              result,
 
-                const migratedRack =
-                  item.rackJis || "";
+              stampDate:
+                item.stampDate || "",
 
-                const migratedShift:
-                  ShiftType =
-                  item.shift === "SHIFT 2"
-                    ? "SHIFT 2"
-                    : item.shift === "SHIFT 3"
-                      ? "SHIFT 3"
-                      : "SHIFT 1";
+              detailProblem:
+                item.detailProblem || "",
 
+              workArea:
+                migratedWorkArea,
 
-                return {
+              rackJis:
+                migratedRack,
 
-                  ...item,
+              pic:
+                item.pic || "",
 
-                  partCode,
+              shift:
+                migratedShift,
+            };
+          });
 
-                  fullCode:
-                    `${item.prefix || ""}${partCode}`,
-
-                  result,
-
-                  stampDate:
-                    item.stampDate || "",
-
-                  detailProblem:
-                    item.detailProblem || "",
-
-                  workArea:
-                    migratedWorkArea,
-
-                  rackJis:
-                    migratedRack,
-
-                  pic:
-                    item.pic || "",
-
-                  shift:
-                    migratedShift,
-
-                };
-
-              }
-            );
-
-
-          setData(
-            migrated
-          );
-
+          setData(migrated);
         }
-
       }
+
 
       const savedSetting =
         localStorage.getItem(
           SETTING_STORAGE_KEY
         );
 
-
       if (savedSetting) {
-
         const setting =
-          JSON.parse(
-            savedSetting
-          );
+          JSON.parse(savedSetting);
 
-        const loadedArea:
-          AreaSetting =
-          setting.workArea ===
-          "DOORSUB"
+        const loadedArea: AreaSetting =
+          setting.workArea === "DOORSUB"
             ? "DOORSUB"
             : "RAK JIS";
 
@@ -232,390 +164,247 @@ export function usePartCodes() {
         const loadedPic =
           setting.pic || "";
 
-        const loadedShift:
-          ShiftType =
+        
+        const loadedShift: ShiftType =
           setting.shift === "SHIFT 2"
             ? "SHIFT 2"
-            : setting.shift === "SHIFT 3"
-              ? "SHIFT 3"
-              : "SHIFT 1";
+            : "SHIFT 1";
 
-        setWorkArea(
-          loadedArea
-        );
+        setWorkArea(loadedArea);
 
+        setRackJis(loadedRack);
 
-        setRackJis(
-          loadedRack
-        );
+        setPic(loadedPic);
 
+        setShift(loadedShift);
 
-        setPic(
-          loadedPic
-        );
+        setForm((previous) => ({
+          ...previous,
 
+          workArea: loadedArea,
 
-        setShift(
-          loadedShift
-        );
+          rackJis: loadedRack,
 
-        setForm(
-          (previous) => ({
+          pic: loadedPic,
 
-            ...previous,
-
-            workArea:
-              loadedArea,
-
-            rackJis:
-              loadedRack,
-
-            pic:
-              loadedPic,
-
-            shift:
-              loadedShift,
-
-          })
-        );
-
+          shift: loadedShift,
+        }));
       }
-
     } catch (error) {
-
       console.error(
         "Gagal membaca Local Storage:",
         error
       );
-
     }
 
-
-    setIsLoaded(
-      true
-    );
-
+    setIsLoaded(true);
   }, []);
 
-  useEffect(() => {
 
+  useEffect(() => {
     if (!isLoaded) {
       return;
     }
 
-
     try {
-
       localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify(data)
       );
-
     } catch (error) {
-
       console.error(
         "Gagal menyimpan Local Storage:",
         error
       );
-
     }
-
   }, [
     data,
     isLoaded,
   ]);
 
+
   const previewCode =
     useMemo(() => {
-
       const selectedArea =
         AREA_OPTIONS.find(
           (item) =>
-            item.label ===
-            form.area
+            item.label === form.area
         );
-
 
       if (!selectedArea) {
         return "";
       }
 
-
       return (
         selectedArea.prefix +
-        (
-          form.partCode ||
-          "---"
-        )
+        (form.partCode || "---")
       );
-
     }, [
       form.area,
       form.partCode,
     ]);
 
+
   const updateForm = (
     field: keyof PartFormData,
     value: string
   ) => {
-
-    setForm(
-      (previous) => ({
-
-        ...previous,
-
-        [field]:
-          value,
-
-      })
-    );
-
+    setForm((previous) => ({
+      ...previous,
+      [field]: value,
+    }));
   };
+
 
   const updateWorkArea = (
     value: AreaSetting
   ) => {
-
-    setWorkArea(
-      value
-    );
-
-    const selectedRack:
-      RackJisType =
-      rackJis ||
-      "RAK JIS 1";
+    setWorkArea(value);
 
 
-    setRackJis(
-      selectedRack
-    );
+    const selectedRack: RackJisType =
+      rackJis || "RAK JIS 1";
 
+    setRackJis(selectedRack);
 
-    setForm(
-      (previous) => ({
+    setForm((previous) => ({
+      ...previous,
 
-        ...previous,
+      workArea: value,
 
-        workArea:
-          value,
-
-        rackJis:
-          selectedRack,
-
-      })
-    );
-
+      rackJis: selectedRack,
+    }));
   };
+
 
   const updateRackJis = (
     value: RackJisType | ""
   ) => {
+    setRackJis(value);
 
-    setRackJis(
-      value
-    );
+    setForm((previous) => ({
+      ...previous,
 
-
-    setForm(
-      (previous) => ({
-
-        ...previous,
-
-        rackJis:
-          value,
-
-      })
-    );
-
+      rackJis: value,
+    }));
   };
+
 
   const updatePic = (
     value: string
   ) => {
+    setPic(value);
 
-    setPic(
-      value
-    );
+    setForm((previous) => ({
+      ...previous,
 
-
-    setForm(
-      (previous) => ({
-
-        ...previous,
-
-        pic:
-          value,
-
-      })
-    );
-
+      pic: value,
+    }));
   };
+
 
   const updateShift = (
     value: ShiftType
   ) => {
+    setShift(value);
 
-    setShift(
-      value
-    );
+    setForm((previous) => ({
+      ...previous,
 
-
-    setForm(
-      (previous) => ({
-
-        ...previous,
-
-        shift:
-          value,
-
-      })
-    );
-
+      shift: value,
+    }));
   };
 
+
   const saveAreaSetting = () => {
-
-    const finalRack =
-      rackJis;
-
+    const finalRack = rackJis;
 
     if (!finalRack) {
-
       return {
-
-        success:
-          false,
-
+        success: false,
         message:
           "Silakan pilih Rak JIS terlebih dahulu.",
-
       };
-
     }
 
-    if (
-      !pic.trim()
-    ) {
-
+    if (!pic.trim()) {
       return {
-
-        success:
-          false,
-
+        success: false,
         message:
           "PIC harus diisi.",
-
       };
-
     }
 
-
     if (!shift) {
-
       return {
-
-        success:
-          false,
-
+        success: false,
         message:
           "Silakan pilih Shift.",
-
       };
-
     }
 
     const setting = {
-
       workArea,
 
-      rackJis:
-        finalRack,
+      rackJis: finalRack,
 
-      pic:
-        pic.trim(),
+      pic: pic.trim(),
 
       shift,
-
     };
 
     localStorage.setItem(
       SETTING_STORAGE_KEY,
-      JSON.stringify(
-        setting
-      )
+      JSON.stringify(setting)
     );
 
-    setForm(
-      (previous) => ({
+    setForm((previous) => ({
+      ...previous,
 
-        ...previous,
+      workArea,
 
-        workArea,
+      rackJis: finalRack,
 
-        rackJis:
-          finalRack,
+      pic: pic.trim(),
 
-        pic:
-          pic.trim(),
-
-        shift,
-
-      })
-    );
-
+      shift,
+    }));
 
     return {
-
-      success:
-        true,
+      success: true,
 
       message:
         "Setting Area berhasil disimpan.",
-
     };
-
   };
+
 
   const resetForm = () => {
+    setForm((previous) => ({
+      ...previous,
 
-    setForm(
-      (previous) => ({
+      area: previous.area,
 
-        ...previous,
+      partCode: "",
 
-        area:
-          form.area,
+      result: "OK",
 
-        partCode:
-          "",
+      stampDate: "",
 
-        result:
-          "OK",
+      detailProblem: "",
 
-        stampDate:
-          "",
+      workArea,
 
-        detailProblem:
-          "",
+      rackJis,
 
-        // Setting terakhir
-        workArea,
+      pic,
 
-        rackJis,
+      shift,
+    }));
 
-        pic,
-
-        shift,
-
-      })
-    );
-
-
-    setEditingId(
-      null
-    );
-
+    setEditingId(null);
   };
+
 
   const savePart = () => {
 
@@ -624,224 +413,160 @@ export function usePartCodes() {
         form.partCode
       )
     ) {
-
       return {
-
-        success:
-          false,
+        success: false,
 
         message:
           "Kode Part harus terdiri dari 3 angka + 3 karakter. Contoh: 020NB9.",
-
       };
-
     }
+
 
     if (
       form.result !== "OK" &&
       form.result !== "NG"
     ) {
-
       return {
-
-        success:
-          false,
+        success: false,
 
         message:
           "Result harus dipilih OK atau NG.",
-
       };
-
     }
+
 
     if (
       !/^[A-Z]\d{4}$/.test(
         form.stampDate
       )
     ) {
-
       return {
-
-        success:
-          false,
+        success: false,
 
         message:
           "STAMP DATE / LOT harus terdiri dari 1 huruf dan 4 angka. Contoh: A1234.",
-
       };
-
     }
 
-    if (
-      !form.workArea
-    ) {
-
+    if (!form.workArea) {
       return {
-
-        success:
-          false,
+        success: false,
 
         message:
           "Area kerja belum dipilih.",
-
       };
-
     }
 
-    if (
-      !form.rackJis
-    ) {
 
+    if (!form.rackJis) {
       return {
-
-        success:
-          false,
+        success: false,
 
         message:
           "Rak JIS belum dipilih.",
-
       };
-
     }
 
-    if (
-      !form.pic.trim()
-    ) {
 
+    if (!form.pic.trim()) {
       return {
-
-        success:
-          false,
+        success: false,
 
         message:
           "PIC belum diisi. Silakan simpan Setting Area terlebih dahulu.",
-
       };
-
     }
 
-    if (
-      !form.shift
-    ) {
 
+    if (!form.shift) {
       return {
-
-        success:
-          false,
+        success: false,
 
         message:
           "Shift belum dipilih.",
-
       };
-
     }
 
     const selectedArea =
       AREA_OPTIONS.find(
         (item) =>
-          item.label ===
-          form.area
+          item.label === form.area
       );
 
-
     if (!selectedArea) {
-
       return {
-
-        success:
-          false,
+        success: false,
 
         message:
           "Model tidak ditemukan.",
-
       };
-
     }
+
 
     const fullCode =
       selectedArea.prefix +
       form.partCode;
 
-    if (
-      editingId !== null
-    ) {
 
-      setData(
-        (previous) =>
+    if (editingId !== null) {
+      setData((previous) =>
+        previous.map((item) =>
+          item.id === editingId
+            ? {
+                ...item,
 
-          previous.map(
-            (item) =>
+                area:
+                  form.area,
 
-              item.id ===
-              editingId
+                prefix:
+                  selectedArea.prefix,
 
-                ? {
+                partCode:
+                  form.partCode,
 
-                    ...item,
+                fullCode,
 
-                    area:
-                      form.area,
+                result:
+                  form.result,
 
-                    prefix:
-                      selectedArea.prefix,
+                stampDate:
+                  form.stampDate,
 
-                    partCode:
-                      form.partCode,
+                detailProblem:
+                  form.detailProblem.trim(),
 
-                    fullCode,
+                workArea:
+                  form.workArea,
 
-                    result:
-                      form.result,
+                rackJis:
+                  form.rackJis,
 
-                    stampDate:
-                      form.stampDate,
+                pic:
+                  form.pic.trim(),
 
-                    detailProblem:
-                      form.detailProblem.trim(),
-
-                    workArea:
-                      form.workArea,
-
-                    rackJis:
-                      form.rackJis,
-
-                    pic:
-                      form.pic.trim(),
-
-                    shift:
-                      form.shift,
-
-                  }
-
-                : item
-
-          )
+                shift:
+                  form.shift,
+              }
+            : item
+        )
       );
-
 
       resetForm();
 
-
       return {
-
-        success:
-          true,
+        success: true,
 
         mode:
           "update" as const,
 
         message:
           "Data berhasil diperbarui.",
-
       };
-
     }
 
-    const newPart:
-      PartData = {
 
-      id:
-        Date.now(),
+    const newPart: PartData = {
+      id: Date.now(),
 
       area:
         form.area,
@@ -877,74 +602,55 @@ export function usePartCodes() {
 
       createdAt:
         new Date().toISOString(),
-
     };
 
 
-    setData(
-      (previous) => [
+    setData((previous) => [
+      ...previous,
 
-        ...previous,
-
-        newPart,
-
-      ]
-    );
-
+      newPart,
+    ]);
 
     resetForm();
 
-
     return {
-
-      success:
-        true,
+      success: true,
 
       mode:
         "create" as const,
 
       message:
         "Data berhasil ditambahkan.",
-
     };
-
   };
+
 
   const editPart = (
     part: PartData
   ) => {
-
-    setEditingId(
-      part.id
-    );
-
+    setEditingId(part.id);
 
     setWorkArea(
       part.workArea ||
-      "RAK JIS"
+        "RAK JIS"
     );
-
 
     setRackJis(
       part.rackJis ||
-      "RAK JIS 1"
+        "RAK JIS 1"
     );
-
 
     setPic(
-      part.pic ||
-      ""
+      part.pic || ""
     );
-
 
     setShift(
-      part.shift ||
-      "SHIFT 1"
+      part.shift === "SHIFT 2"
+        ? "SHIFT 2"
+        : "SHIFT 1"
     );
 
-
     setForm({
-
       area:
         part.area,
 
@@ -957,12 +663,10 @@ export function usePartCodes() {
           : "OK",
 
       stampDate:
-        part.stampDate ||
-        "",
+        part.stampDate || "",
 
       detailProblem:
-        part.detailProblem ||
-        "",
+        part.detailProblem || "",
 
       workArea:
         part.workArea ||
@@ -973,164 +677,114 @@ export function usePartCodes() {
         "RAK JIS 1",
 
       pic:
-        part.pic ||
-        "",
+        part.pic || "",
 
       shift:
-        part.shift ||
-        "SHIFT 1",
-
+        part.shift === "SHIFT 2"
+          ? "SHIFT 2"
+          : "SHIFT 1",
     });
-
 
     window.scrollTo({
+      top: 0,
 
-      top:
-        0,
-
-      behavior:
-        "smooth",
-
+      behavior: "smooth",
     });
-
   };
+
 
   const deletePart = (
     id: number
   ) => {
-
-    setData(
-      (previous) =>
-        previous.filter(
-          (item) =>
-            item.id !== id
-        )
+    setData((previous) =>
+      previous.filter(
+        (item) =>
+          item.id !== id
+      )
     );
 
-
-    if (
-      editingId === id
-    ) {
-
+    if (editingId === id) {
       resetForm();
-
     }
-
   };
 
   const deleteAll = () => {
-
-    setData(
-      []
-    );
+    setData([]);
 
     resetForm();
-
   };
+
 
   const filteredData =
     useMemo(() => {
-
       const keyword =
         search
           .trim()
           .toLowerCase();
 
-
       return data.filter(
         (item) => {
-
           const matchesSearch =
             keyword === "" ||
 
             item.fullCode
               .toLowerCase()
-              .includes(
-                keyword
-              ) ||
+              .includes(keyword) ||
 
             item.area
               .toLowerCase()
-              .includes(
-                keyword
-              ) ||
+              .includes(keyword) ||
 
             item.partCode
               .toLowerCase()
-              .includes(
-                keyword
-              ) ||
+              .includes(keyword) ||
 
             item.result
               .toLowerCase()
-              .includes(
-                keyword
-              ) ||
+              .includes(keyword) ||
 
             item.stampDate
               .toLowerCase()
-              .includes(
-                keyword
-              ) ||
+              .includes(keyword) ||
 
             item.detailProblem
               .toLowerCase()
-              .includes(
-                keyword
-              ) ||
+              .includes(keyword) ||
 
             item.workArea
               .toLowerCase()
-              .includes(
-                keyword
-              ) ||
+              .includes(keyword) ||
 
             item.rackJis
               .toLowerCase()
-              .includes(
-                keyword
-              ) ||
+              .includes(keyword) ||
 
             item.pic
               .toLowerCase()
-              .includes(
-                keyword
-              ) ||
+              .includes(keyword) ||
 
             item.shift
               .toLowerCase()
-              .includes(
-                keyword
-              );
-
+              .includes(keyword);
 
           const matchesArea =
-            filterArea ===
-              "ALL" ||
-            item.area ===
-              filterArea;
-
+            filterArea === "ALL" ||
+            item.area === filterArea;
 
           return (
             matchesSearch &&
             matchesArea
           );
-
         }
       );
-
     }, [
-
       data,
-
       search,
-
       filterArea,
-
     ]);
 
-  return {
 
+  return {
     // Data
     data,
 
@@ -1187,7 +841,5 @@ export function usePartCodes() {
     deleteAll,
 
     resetForm,
-
   };
-
 }
