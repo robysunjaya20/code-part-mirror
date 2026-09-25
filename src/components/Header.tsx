@@ -9,7 +9,7 @@ export default function Header() {
         {/* Logo & Title */}
         <div className="flex min-w-0 items-center gap-3">
 
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-sm font-extrabold text-white shadow-sm">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-sm font-extrabold text-white shadow-sm">
             Bei
           </div>
 
@@ -55,9 +55,6 @@ export default function Header() {
               Google Sheets
             </span>
 
-            <span className="text-xs">
-              ↗
-            </span>
           </a>
 
         </div>

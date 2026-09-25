@@ -66,11 +66,11 @@ export default function AreaSetting({
     <section className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
 
-      <div className="border-b border-slate-200 bg-slate-50 px-5 py-4 sm:px-6">
+      <div className="border-b border-slate-200 bg-slate-50 px-5 py-3 sm:px-6">
 
         <div className="flex items-center gap-3">
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-lg">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-lg">
             ⚙️
           </div>
 
@@ -113,12 +113,8 @@ export default function AreaSetting({
                   e.target.value
                 )
               }
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
             />
-
-            <p className="mt-1.5 text-xs font-medium text-slate-500">
-              Menentukan sheet Google Sheets.
-            </p>
 
           </div>
 
@@ -136,7 +132,7 @@ export default function AreaSetting({
                   e.target.value as AreaSetting
                 )
               }
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
             >
 
               {WORK_AREA_OPTIONS.map(
@@ -169,7 +165,7 @@ export default function AreaSetting({
                   e.target.value as RackJisType
                 )
               }
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
             >
 
               <option value="">
@@ -190,10 +186,6 @@ export default function AreaSetting({
               )}
 
             </select>
-
-            <p className="mt-1.5 text-xs font-medium text-slate-500">
-              Pilih posisi Rak JIS untuk area {area}.
-            </p>
 
           </div>
 
@@ -216,7 +208,7 @@ export default function AreaSetting({
                 )
               }
               placeholder="Ketik nama PIC"
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition placeholder:font-normal placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm outline-none transition placeholder:font-normal placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
             />
 
           </div>
@@ -234,7 +226,7 @@ export default function AreaSetting({
                   e.target.value as ShiftType
                 )
               }
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
             >
 
               {SHIFT_OPTIONS.map(
@@ -261,9 +253,9 @@ export default function AreaSetting({
           <button
             type="button"
             onClick={onSave}
-            className="rounded-xl bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-slate-800 active:scale-[0.99]"
+            className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-slate-800 active:scale-[0.99]"
           >
-            ✓ Simpan Setting
+           Simpan Setting
           </button>
 
         </div>

@@ -32,7 +32,7 @@ export default function PartForm({
 }: Props) {
   return (
     <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-200 px-5 py-5 sm:px-6">
+      <div className="border-b border-slate-200 px-4 py-4 sm:px-5">
         <div className="flex items-center justify-between gap-4">
           <div>
             <h2 className="text-lg font-bold text-slate-900">
@@ -59,7 +59,7 @@ export default function PartForm({
           <div>
             <label
               htmlFor="stampDate"
-              className="mb-2 block text-sm font-bold text-slate-700"
+              className="mb-1 block text-sm font-bold text-slate-700"
             >
               STAMP DATE / LOT
             </label>
@@ -78,8 +78,8 @@ export default function PartForm({
 
                 onChange("stampDate", value);
               }}
-              placeholder="Contoh: A1234"
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-slate-800 shadow-sm outline-none transition placeholder:font-sans placeholder:tracking-normal placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+              placeholder="Contoh: H2126"
+              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-mono text-sm font-bold uppercase tracking-wider text-slate-800 shadow-sm outline-none transition placeholder:font-sans placeholder:tracking-normal placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
             />
 
             <p className="mt-1.5 text-xs font-medium text-slate-500">
@@ -90,7 +90,7 @@ export default function PartForm({
           <div>
             <label
               htmlFor="model"
-              className="mb-2 block text-sm font-bold text-slate-700"
+              className="mb-1 block text-sm font-bold text-slate-700"
             >
               Model
             </label>
@@ -101,7 +101,7 @@ export default function PartForm({
               onChange={(e) =>
                 onChange("area", e.target.value)
               }
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
             >
               {AREA_OPTIONS.map((item) => (
                 <option
@@ -117,7 +117,7 @@ export default function PartForm({
           <div>
             <label
               htmlFor="partCode"
-              className="mb-2 block text-sm font-bold text-slate-700"
+              className="mb-1 block text-sm font-bold text-slate-700"
             >
               Kode Part
             </label>
@@ -136,7 +136,7 @@ export default function PartForm({
                 onChange("partCode", value);
               }}
               placeholder="Contoh: 020NB9"
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-mono text-sm font-bold uppercase tracking-wider text-slate-800 shadow-sm outline-none transition placeholder:font-sans placeholder:tracking-normal placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-mono text-sm font-bold uppercase tracking-wider text-slate-800 shadow-sm outline-none transition placeholder:font-sans placeholder:tracking-normal placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
             />
 
             <p className="mt-1.5 text-xs font-medium text-slate-500">
@@ -145,12 +145,12 @@ export default function PartForm({
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-bold text-slate-700">
+            <label className="mb-1 block text-sm font-bold text-slate-700">
               Result
             </label>
 
-            <div className="flex h-[50px] items-center gap-6 rounded-xl border border-slate-300 bg-white px-4">
-              <label className="flex cursor-pointer items-center gap-2">
+            <div className="flex h-[40px] items-center gap-6 rounded-xl border border-slate-300 bg-white px-4">
+              <label className="flex cursor-pointer items-center gap-1">
                 <input
                   type="radio"
                   name="part-result"
@@ -159,7 +159,7 @@ export default function PartForm({
                   onChange={() =>
                     onChange("result", "OK")
                   }
-                  className="h-4 w-4 accent-emerald-600"
+                  className="h-3 w-3 accent-emerald-600"
                 />
 
                 <span className="text-sm font-bold text-emerald-700">
@@ -176,7 +176,7 @@ export default function PartForm({
                   onChange={() =>
                     onChange("result", "NG")
                   }
-                  className="h-4 w-4 accent-red-600"
+                  className="h-3 w-3 accent-red-600"
                 />
 
                 <span className="text-sm font-bold text-red-700">
@@ -190,7 +190,7 @@ export default function PartForm({
         <div className="mt-5">
           <label
             htmlFor="detailProblem"
-            className="mb-2 block text-sm font-bold text-slate-700"
+            className="mb-1 block text-sm font-bold text-slate-700"
           >
             DETAIL PROBLEM
           </label>
@@ -206,20 +206,17 @@ export default function PartForm({
             }
             rows={3}
             placeholder="Masukkan detail problem / deskripsi..."
-            className="w-full resize-y rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+            className="w-full resize-y rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
           />
 
-          <p className="mt-1.5 text-xs font-medium text-slate-500">
-            Masukkan deskripsi secara detail.
-          </p>
         </div>
 
-        <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-5">
+        <div className="mt-2 rounded-2xl border border-blue-200 bg-blue-50 p-5">
           <p className="text-xs font-bold uppercase tracking-wider text-blue-700">
             Preview Kode
           </p>
 
-          <p className="mt-2 break-all font-mono text-2xl font-extrabold tracking-wide text-blue-900 sm:text-3xl">
+          <p className="mt-1 break-all font-mono text-2xl font-extrabold tracking-wide text-blue-900 sm:text-xl">
             {previewCode || "-"}
           </p>
         </div>
@@ -228,7 +225,7 @@ export default function PartForm({
           <button
             type="button"
             onClick={onSubmit}
-            className="flex-1 rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md active:scale-[0.99]"
+            className="flex-1 rounded-xl bg-blue-600 px-3 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md active:scale-[0.99]"
           >
             {editing
               ? "✓ Simpan Perubahan"
@@ -239,7 +236,7 @@ export default function PartForm({
             <button
               type="button"
               onClick={onCancel}
-              className="rounded-xl border border-slate-300 bg-white px-5 py-3.5 text-sm font-bold text-slate-700 transition hover:bg-slate-100"
+              className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-100"
             >
               Batal
             </button>

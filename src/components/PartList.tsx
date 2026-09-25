@@ -57,7 +57,7 @@ export default function PartList({
 
       <div className="border-b border-slate-200 p-5 sm:p-6">
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
           <div>
 
@@ -66,7 +66,7 @@ export default function PartList({
             </h2>
 
             <p className="mt-1 text-sm font-medium text-slate-500">
-              Kelola kode part yang tersimpan di browser.
+              Kelola kode part yang tersimpan di lokal.
             </p>
 
           </div>
@@ -77,7 +77,7 @@ export default function PartList({
             <button
               type="button"
               onClick={onDeleteAll}
-              className="rounded-xl border border-red-300 bg-red-50 px-4 py-2.5 text-sm font-bold text-red-700 transition hover:bg-red-100"
+              className="rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-sm font-bold text-red-700 transition hover:bg-red-100"
             >
               Hapus Semua
             </button>
@@ -92,7 +92,7 @@ export default function PartList({
 
           <div className="sm:col-span-2">
 
-            <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-600">
+            <label className="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-600">
               Cari Data
             </label>
 
@@ -125,7 +125,7 @@ export default function PartList({
 
           <div className="min-w-0">
 
-            <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-600">
+            <label className="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-600">
               Filter Model
             </label>
 
@@ -205,9 +205,6 @@ export default function PartList({
 
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
-                    {/* =========================
-                        INFO
-                    ========================= */}
 
                     <div className="min-w-0">
 
