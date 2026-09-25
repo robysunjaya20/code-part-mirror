@@ -1,645 +1,299 @@
 "use client";
 
-import {
-  useState,
-} from "react";
+import { useState } from "react";
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 import StatsCards from "@/components/StatsCards";
-
 import AreaSetting from "@/components/AreaSetting";
-
 import PartForm from "@/components/PartForm";
-
 import PartList from "@/components/PartList";
-
 import GoogleSheetsCard from "@/components/GoogleSheetsCard";
-
 import SyncModal from "@/components/SyncModal";
-
 import DeleteAllModal from "@/components/DeleteAllModal";
-
 import Toast from "@/components/Toast";
 
-import {
-  usePartCodes,
-} from "@/hooks/usePartCodes";
-
-import {
-  syncAllToGoogleSheets,
-} from "@/lib/api";
-
+import { usePartCodes } from "@/hooks/usePartCodes";
+import { saveBatchToGoogleSheets } from "@/lib/api";
 
 export default function Home() {
-
   const {
-
     data,
-
     filteredData,
-
     form,
-
     editingId,
-
     search,
-
     filterArea,
-
     previewCode,
 
     setSearch,
-
     setFilterArea,
 
     updateForm,
 
     savePart,
-
     editPart,
-
     deletePart,
-
     deleteAll,
-
     resetForm,
 
-    // ========================================
-    // SETTING AREA
-    // ========================================
-
     workArea,
-
     rackJis,
-
     pic,
-
     shift,
 
     updateWorkArea,
-
     updateRackJis,
-
     updatePic,
-
     updateShift,
 
     saveAreaSetting,
-
   } = usePartCodes();
 
+  const [showSyncModal, setShowSyncModal] =
+    useState(false);
 
-  const [
-    showSyncModal,
-    setShowSyncModal,
-  ] = useState(false);
+  const [showDeleteAllModal, setShowDeleteAllModal] =
+    useState(false);
 
+  const [isSyncing, setIsSyncing] =
+    useState(false);
 
-  const [
-    showDeleteAllModal,
-    setShowDeleteAllModal,
-  ] = useState(false);
+  const [lastSync, setLastSync] =
+    useState<string | null>(null);
 
-
-  const [
-    isSyncing,
-    setIsSyncing,
-  ] = useState(false);
-
-
-  const [
-    lastSync,
-    setLastSync,
-  ] = useState<string | null>(null);
-
-
-  const [
-    toast,
-    setToast,
-  ] = useState<{
+  const [toast, setToast] = useState<{
     message: string;
-    type:
-      | "success"
-      | "error"
-      | "info";
+    type: "success" | "error" | "info";
   } | null>(null);
 
-
-  // ========================================
-  // SAVE AREA SETTING
-  // ========================================
-
   const handleSaveAreaSetting = () => {
-
-    const result =
-      saveAreaSetting();
-
+    const result = saveAreaSetting();
 
     if (!result.success) {
-
       setToast({
-        message:
-          result.message,
-
-        type:
-          "error",
+        message: result.message,
+        type: "error",
       });
 
       return;
-
     }
 
-
     setToast({
-      message:
-        result.message,
-
-      type:
-        "success",
+      message: result.message,
+      type: "success",
     });
-
   };
-
-
-  // ========================================
-  // SAVE PART
-  // ========================================
 
   const handleSavePart = () => {
-
-    const result =
-      savePart();
-
+    const result = savePart();
 
     if (!result.success) {
-
       setToast({
-        message:
-          result.message,
-
-        type:
-          "error",
+        message: result.message,
+        type: "error",
       });
 
       return;
-
     }
 
-
     setToast({
-      message:
-        result.message,
-
-      type:
-        "success",
+      message: result.message,
+      type: "success",
     });
-
   };
 
-
-  // ========================================
-  // DELETE PART
-  // ========================================
-
-  const handleDeletePart = (
-    id: number
-  ) => {
-
+  const handleDeletePart = (id: number) => {
     deletePart(id);
 
-
     setToast({
-      message:
-        "Data berhasil dihapus.",
-
-      type:
-        "success",
+      message: "Data berhasil dihapus.",
+      type: "success",
     });
-
   };
-
-
-  // ========================================
-  // DELETE ALL
-  // ========================================
 
   const handleDeleteAll = () => {
-
     deleteAll();
 
-    setShowDeleteAllModal(
-      false
-    );
+    setShowDeleteAllModal(false);
 
     setToast({
       message:
-        "Semua data berhasil dihapus.",
-
-      type:
-        "success",
+        "Semua data lokal berhasil dihapus.",
+      type: "success",
     });
-
   };
 
-
-  // ========================================
-  // OPEN SYNC MODAL
-  // ========================================
-
   const openSyncModal = () => {
-
     if (data.length === 0) {
-
       setToast({
         message:
           "Belum ada data lokal yang bisa disimpan.",
-
-        type:
-          "info",
+        type: "info",
       });
 
       return;
-
     }
 
     setShowSyncModal(true);
-
   };
 
-
-  // ========================================
-  // SYNC GOOGLE SHEETS
-  // ========================================
-
   const handleSync = async () => {
-
     try {
-
       setIsSyncing(true);
 
       const result =
-        await syncAllToGoogleSheets(
-          data
-        );
-
+        await saveBatchToGoogleSheets(data);
 
       setLastSync(
-        new Date().toLocaleString(
-          "id-ID"
-        )
+        new Date().toLocaleString("id-ID")
       );
 
-
-      setShowSyncModal(
-        false
-      );
-
+      setShowSyncModal(false);
 
       setToast({
         message:
-          `Berhasil menyimpan ${result.count} data ke Google Sheets.`,
-
-        type:
-          "success",
+          `Berhasil menyimpan ${result.count} data baru ke Google Sheets.`,
+        type: "success",
       });
-
-
     } catch (error) {
-
-      console.error(error);
-
-
-      setShowSyncModal(
-        false
+      console.error(
+        "Gagal menyimpan ke Google Sheets:",
+        error
       );
 
+      setShowSyncModal(false);
 
       setToast({
         message:
           error instanceof Error
             ? error.message
             : "Gagal menyimpan data ke Google Sheets.",
-
-        type:
-          "error",
+        type: "error",
       });
-
-
     } finally {
-
       setIsSyncing(false);
-
     }
-
   };
 
-
   return (
-
     <div className="min-h-screen bg-slate-100">
-
       <Header />
 
-
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-
-
-        {/* ========================================
-            SETTING AREA KERJA
-        ======================================== */}
+        <StatsCards
+          data={data}
+          displayed={filteredData.length}
+        />
 
         <AreaSetting
-
-          area={
-            workArea
-          }
-
-          rackJis={
-            rackJis
-          }
-
-          pic={
-            pic
-          }
-
-          shift={
-            shift
-          }
-
-          onChangeArea={
-            updateWorkArea
-          }
-
-          onChangeRackJis={
-            updateRackJis
-          }
-
-          onChangePic={
-            updatePic
-          }
-
-          onChangeShift={
-            updateShift
-          }
-
-          onSave={
-            handleSaveAreaSetting
-          }
-
+          area={workArea}
+          rackJis={rackJis}
+          pic={pic}
+          shift={shift}
+          onChangeArea={updateWorkArea}
+          onChangeRackJis={updateRackJis}
+          onChangePic={updatePic}
+          onChangeShift={updateShift}
+          onSave={handleSaveAreaSetting}
         />
-
-
-        {/* ========================================
-            STATISTICS
-        ======================================== */}
-
-        <StatsCards
-          data={
-            data
-          }
-
-          displayed={
-            filteredData.length
-          }
-        />
-
-
-        {/* ========================================
-            FORM KODE PART
-        ======================================== */}
 
         <PartForm
-
-          form={
-            form
-          }
-
-          editing={
-            editingId !== null
-          }
-
-          previewCode={
-            previewCode
-          }
-
-          onChange={
-            updateForm
-          }
-
-          onSubmit={
-            handleSavePart
-          }
-
-          onCancel={
-            resetForm
-          }
-
+          form={form}
+          editing={editingId !== null}
+          previewCode={previewCode}
+          onChange={updateForm}
+          onSubmit={handleSavePart}
+          onCancel={resetForm}
         />
-
-
-        {/* ========================================
-            LIST DATA
-        ======================================== */}
-
-        <PartList
-
-          data={
-            filteredData
-          }
-
-          search={
-            search
-          }
-
-          filterArea={
-            filterArea
-          }
-
-          onSearch={
-            setSearch
-          }
-
-          onFilterArea={
-            setFilterArea
-          }
-
-          onEdit={
-            editPart
-          }
-
-          onDelete={
-            handleDeletePart
-          }
-
-          onDeleteAll={() =>
-            setShowDeleteAllModal(
-              true
-            )
-          }
-
-          onClearFilter={() => {
-
-            setSearch("");
-
-            setFilterArea(
-              "ALL"
-            );
-
-          }}
-
-        />
-
-
-        {/* ========================================
-            GOOGLE SHEETS
-        ======================================== */}
 
         <GoogleSheetsCard
-
-          dataCount={
-            data.length
-          }
-
-          isSyncing={
-            isSyncing
-          }
-
-          lastSync={
-            lastSync
-          }
-
-          onSync={
-            openSyncModal
-          }
-
+          dataCount={data.length}
+          isSyncing={isSyncing}
+          lastSync={lastSync}
+          onSync={openSyncModal}
         />
 
+        <PartList
+          data={filteredData}
+          search={search}
+          filterArea={filterArea}
+          onSearch={setSearch}
+          onFilterArea={setFilterArea}
+          onEdit={editPart}
+          onDelete={handleDeletePart}
+          onDeleteAll={() =>
+            setShowDeleteAllModal(true)
+          }
+          onClearFilter={() => {
+            setSearch("");
+            setFilterArea("ALL");
+          }}
+        />
       </main>
-
 
       <Footer />
 
-
-      {/* ========================================
-          SYNC MODAL
-      ======================================== */}
-
-      {showSyncModal &&
-        !isSyncing && (
-
+      {showSyncModal && !isSyncing && (
         <SyncModal
-
-          dataCount={
-            data.length
-          }
-
+          dataCount={data.length}
           onClose={() =>
-            setShowSyncModal(
-              false
-            )
+            setShowSyncModal(false)
           }
-
-          onConfirm={
-            handleSync
-          }
-
+          onConfirm={handleSync}
         />
-
       )}
 
       {isSyncing && (
-
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 px-4 backdrop-blur-sm">
-
           <div className="w-full max-w-sm rounded-3xl bg-white p-8 text-center shadow-2xl">
-
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100 text-2xl">
               ☁️
             </div>
 
-
             <div className="mx-auto mt-5 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-600" />
-
 
             <h2 className="mt-5 text-lg font-extrabold text-slate-900">
               Menyimpan Data
             </h2>
 
-
             <p className="mt-2 text-sm font-medium leading-relaxed text-slate-500">
-
-              Sedang menyinkronkan{" "}
-
+              Sedang menyimpan{" "}
               <span className="font-bold text-slate-700">
                 {data.length} data
-              </span>
-
-              {" "}ke Google Sheets.
-
+              </span>{" "}
+              dari browser ke Google Sheets.
             </p>
 
-
             <div className="mt-5 rounded-xl bg-slate-100 px-4 py-3">
-
               <p className="text-xs font-semibold text-slate-500">
                 Mohon jangan tutup halaman ini.
               </p>
-
             </div>
-
           </div>
-
         </div>
-
       )}
 
-
       {showDeleteAllModal && (
-
         <DeleteAllModal
-
-          dataCount={
-            data.length
-          }
-
+          dataCount={data.length}
           onClose={() =>
-            setShowDeleteAllModal(
-              false
-            )
+            setShowDeleteAllModal(false)
           }
-
-          onConfirm={
-            handleDeleteAll
-          }
-
+          onConfirm={handleDeleteAll}
         />
-
       )}
 
       {toast && (
-
         <Toast
-
-          message={
-            toast.message
-          }
-
-          type={
-            toast.type
-          }
-
+          message={toast.message}
+          type={toast.type}
           onClose={() =>
             setToast(null)
           }
-
         />
-
       )}
-
     </div>
-
   );
-
 }

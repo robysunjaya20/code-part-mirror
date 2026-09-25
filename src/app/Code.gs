@@ -1,70 +1,86 @@
 const SHEET_NAME = "data";
 
 function getSheet() {
+
   const spreadsheet =
     SpreadsheetApp.getActiveSpreadsheet();
 
   return spreadsheet.getSheetByName(
     SHEET_NAME
   );
+
 }
-
-
-// ========================================
-// GET DATA
-// ========================================
 
 function doGet() {
 
   try {
 
-    const sheet = getSheet();
+    const sheet =
+      getSheet();
+
 
     if (!sheet) {
 
       return jsonResponse({
+
         success: false,
+
         message:
           "Sheet data tidak ditemukan"
+
       });
 
     }
+
 
     const values =
       sheet
         .getDataRange()
         .getValues();
 
-    if (values.length <= 1) {
+
+    if (
+      values.length <= 1
+    ) {
 
       return jsonResponse({
+
         success: true,
+
         data: []
+
       });
 
     }
 
-    const headers = values[0];
+
+    const headers =
+      values[0];
+
 
     const data =
       values
         .slice(1)
-        .map((row) => {
+        .map(
+          (row) => {
 
-          const item = {};
+            const item = {};
 
-          headers.forEach(
-            (header, index) => {
 
-              item[header] =
-                row[index];
+            headers.forEach(
+              (header, index) => {
 
-            }
-          );
+                item[header] =
+                  row[index];
 
-          return item;
+              }
+            );
 
-        });
+
+            return item;
+
+          }
+        );
 
 
     return jsonResponse({
@@ -91,10 +107,6 @@ function doGet() {
 
 }
 
-
-// ========================================
-// POST
-// ========================================
 
 function doPost(e) {
 
@@ -127,11 +139,6 @@ function doPost(e) {
     const action =
       data.action;
 
-
-    // ====================================
-    // CREATE
-    // ====================================
-
     if (
       action === "create"
     ) {
@@ -140,26 +147,48 @@ function doPost(e) {
         Date.now();
 
 
+      const no =
+        sheet.getLastRow();
+
+
       sheet.appendRow([
 
-        newId,
+        // A = No
+        no,
 
-        data.area,
+        // B = Shift
+        data.shift || "",
 
-        data.prefix,
+        // C = PIC
+        data.pic || "",
 
-        data.partCode,
+        // D = Area
+        data.workArea || "",
 
-        data.fullCode,
+        // E = No Rakjis
+        data.rackJis || "",
 
-        data.result || "OK",
-
+        // F = Stamp Date
         data.stampDate || "",
 
+        // G = Model
+        data.area || "",
+
+        // H = Full Code
+        data.fullCode || "",
+
+        // I = Result
+        data.result || "OK",
+
+        // J = Detail Problem
         data.detailProblem || "",
 
+        // K = Created At
         data.createdAt ||
-          new Date()
+          new Date(),
+
+        // L = ID
+        newId
 
       ]);
 
@@ -178,11 +207,6 @@ function doPost(e) {
 
     }
 
-
-    // ====================================
-    // UPDATE
-    // ====================================
-
     if (
       action === "update"
     ) {
@@ -199,9 +223,10 @@ function doPost(e) {
         i++
       ) {
 
+        // Kolom L = ID
         const rowId =
           String(
-            values[i][0]
+            values[i][11]
           );
 
 
@@ -210,47 +235,46 @@ function doPost(e) {
           String(data.id)
         ) {
 
-          /*
-            Struktur kolom:
-
-            A = ID
-            B = Model
-            C = Prefix
-            D = Kode Part
-            E = Full Code
-            F = Result
-            G = Stamp Date
-            H = Detail Problem
-            I = Created At
-          */
-
-
           sheet
             .getRange(
               i + 1,
               2,
               1,
-              8
+              10
             )
             .setValues([
 
               [
 
-                data.area,
+                // B
+                data.shift || "",
 
-                data.prefix,
+                // C
+                data.pic || "",
 
-                data.partCode,
+                // D
+                data.workArea || "",
 
-                data.fullCode,
+                // E
+                data.rackJis || "",
 
-                data.result || "OK",
-
+                // F
                 data.stampDate || "",
 
+                // G
+                data.area || "",
+
+                // H
+                data.fullCode || "",
+
+                // I
+                data.result || "OK",
+
+                // J
                 data.detailProblem || "",
 
-                values[i][8]
+                // K
+                values[i][10]
 
               ]
 
@@ -282,11 +306,6 @@ function doPost(e) {
 
     }
 
-
-    // ====================================
-    // DELETE
-    // ====================================
-
     if (
       action === "delete"
     ) {
@@ -303,9 +322,10 @@ function doPost(e) {
         i++
       ) {
 
+        // Kolom L = ID
         const rowId =
           String(
-            values[i][0]
+            values[i][11]
           );
 
 
@@ -317,6 +337,10 @@ function doPost(e) {
           sheet.deleteRow(
             i + 1
           );
+
+
+          // Rapikan nomor
+          renumberRows();
 
 
           return jsonResponse({
@@ -344,11 +368,6 @@ function doPost(e) {
 
     }
 
-
-    // ====================================
-    // SYNC ALL
-    // ====================================
-
     if (
       action === "syncAll"
     ) {
@@ -360,28 +379,6 @@ function doPost(e) {
       const lastRow =
         sheet.getLastRow();
 
-
-      /*
-        Struktur:
-
-        A = ID
-        B = Model
-        C = Prefix
-        D = Kode Part
-        E = Full Code
-        F = Result
-        G = Stamp Date
-        H = Detail Problem
-        I = Created At
-
-        Total = 9 kolom
-      */
-
-
-      // -------------------------------
-      // Hapus data lama
-      // -------------------------------
-
       if (
         lastRow > 1
       ) {
@@ -391,16 +388,12 @@ function doPost(e) {
             2,
             1,
             lastRow - 1,
-            9
+            12
           )
           .clearContent();
 
       }
 
-
-      // -------------------------------
-      // Jika tidak ada data
-      // -------------------------------
 
       if (
         values.length === 0
@@ -420,46 +413,48 @@ function doPost(e) {
       }
 
 
-      // -------------------------------
-      // Buat rows
-      // -------------------------------
-
       const rows =
         values.map(
-          (item) => [
+          (item, index) => [
 
-            item.id,
+            index + 1,
 
-            item.area,
+            item.shift || "",
 
-            item.prefix,
+            item.pic || "",
 
-            item.partCode,
+            item.workArea || "",
 
-            item.fullCode,
-
-            item.result || "OK",
+            item.rackJis || "",
 
             item.stampDate || "",
 
+            item.area || "",
+
+            item.fullCode || "",
+
+            item.result || "OK",
+
             item.detailProblem || "",
 
-            item.createdAt
+            item.createdAt || "",
+
+            item.id || ""
 
           ]
         );
 
 
-      // -------------------------------
-      // Tulis ke Google Sheet
-      // -------------------------------
+      /*
+        Tulis 12 kolom ke Google Sheet
+      */
 
       sheet
         .getRange(
           2,
           1,
           rows.length,
-          9
+          12
         )
         .setValues(
           rows
@@ -479,6 +474,7 @@ function doPost(e) {
       });
 
     }
+
 
     return jsonResponse({
 
@@ -504,6 +500,55 @@ function doPost(e) {
   }
 
 }
+
+function renumberRows() {
+
+  const sheet =
+    getSheet();
+
+
+  const lastRow =
+    sheet.getLastRow();
+
+
+  if (
+    lastRow <= 1
+  ) {
+
+    return;
+
+  }
+
+
+  const numbers = [];
+
+
+  for (
+    let i = 1;
+    i < lastRow;
+    i++
+  ) {
+
+    numbers.push([
+      i
+    ]);
+
+  }
+
+
+  sheet
+    .getRange(
+      2,
+      1,
+      numbers.length,
+      1
+    )
+    .setValues(
+      numbers
+    );
+
+}
+
 
 function jsonResponse(data) {
 

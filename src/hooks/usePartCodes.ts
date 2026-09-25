@@ -18,11 +18,6 @@ import type {
   ShiftType,
 } from "@/types/part";
 
-
-// ========================================
-// STORAGE KEY
-// ========================================
-
 const STORAGE_KEY =
   "part-code-data";
 
@@ -30,27 +25,13 @@ const SETTING_STORAGE_KEY =
   "part-area-setting";
 
 
-// ========================================
-// HOOK
-// ========================================
-
 export function usePartCodes() {
-
-
-  // ======================================
-  // DATA
-  // ======================================
 
   const [data, setData] =
     useState<PartData[]>([]);
 
   const [isLoaded, setIsLoaded] =
     useState(false);
-
-
-  // ======================================
-  // SETTING AREA KERJA
-  // ======================================
 
   const [workArea, setWorkArea] =
     useState<AreaSetting>(
@@ -72,11 +53,6 @@ export function usePartCodes() {
     useState<ShiftType>(
       "SHIFT 1"
     );
-
-
-  // ======================================
-  // FORM
-  // ======================================
 
   const [form, setForm] =
     useState<PartFormData>({
@@ -110,20 +86,10 @@ export function usePartCodes() {
 
     });
 
-
-  // ======================================
-  // EDITING
-  // ======================================
-
   const [editingId, setEditingId] =
     useState<number | null>(
       null
     );
-
-
-  // ======================================
-  // SEARCH
-  // ======================================
 
   const [search, setSearch] =
     useState("");
@@ -132,18 +98,9 @@ export function usePartCodes() {
   const [filterArea, setFilterArea] =
     useState("ALL");
 
-
-  // ========================================
-  // LOAD LOCAL STORAGE
-  // ========================================
-
   useEffect(() => {
 
     try {
-
-      // ====================================
-      // LOAD DATA
-      // ====================================
 
       const saved =
         localStorage.getItem(
@@ -165,16 +122,8 @@ export function usePartCodes() {
             parsed.map(
               (item) => {
 
-                // --------------------------
-                // Migrasi Part Code lama
-                // --------------------------
-
                 let partCode =
                   item.partCode || "";
-
-
-                // Data lama:
-                // 020 + NB9 = 020NB9
 
                 if (
                   item.color &&
@@ -188,20 +137,10 @@ export function usePartCodes() {
 
                 }
 
-
-                // --------------------------
-                // Result
-                // --------------------------
-
                 const result =
                   item.result === "NG"
                     ? "NG"
                     : "OK";
-
-
-                // --------------------------
-                // Work Area
-                // --------------------------
 
                 const migratedWorkArea:
                   AreaSetting =
@@ -210,18 +149,8 @@ export function usePartCodes() {
                     ? "DOORSUB"
                     : "RAK JIS";
 
-
-                // --------------------------
-                // Rack JIS
-                // --------------------------
-
                 const migratedRack =
                   item.rackJis || "";
-
-
-                // --------------------------
-                // Shift
-                // --------------------------
 
                 const migratedShift:
                   ShiftType =
@@ -275,11 +204,6 @@ export function usePartCodes() {
 
       }
 
-
-      // ====================================
-      // LOAD SETTING
-      // ====================================
-
       const savedSetting =
         localStorage.getItem(
           SETTING_STORAGE_KEY
@@ -293,11 +217,6 @@ export function usePartCodes() {
             savedSetting
           );
 
-
-        // --------------------------
-        // Area
-        // --------------------------
-
         const loadedArea:
           AreaSetting =
           setting.workArea ===
@@ -305,28 +224,13 @@ export function usePartCodes() {
             ? "DOORSUB"
             : "RAK JIS";
 
-
-        // --------------------------
-        // Rack JIS
-        // --------------------------
-
         const loadedRack:
           RackJisType | "" =
           setting.rackJis ||
           "RAK JIS 1";
 
-
-        // --------------------------
-        // PIC
-        // --------------------------
-
         const loadedPic =
           setting.pic || "";
-
-
-        // --------------------------
-        // Shift
-        // --------------------------
 
         const loadedShift:
           ShiftType =
@@ -335,11 +239,6 @@ export function usePartCodes() {
             : setting.shift === "SHIFT 3"
               ? "SHIFT 3"
               : "SHIFT 1";
-
-
-        // --------------------------
-        // Set state
-        // --------------------------
 
         setWorkArea(
           loadedArea
@@ -359,11 +258,6 @@ export function usePartCodes() {
         setShift(
           loadedShift
         );
-
-
-        // --------------------------
-        // Update form
-        // --------------------------
 
         setForm(
           (previous) => ({
@@ -403,11 +297,6 @@ export function usePartCodes() {
 
   }, []);
 
-
-  // ========================================
-  // SAVE DATA TO LOCAL STORAGE
-  // ========================================
-
   useEffect(() => {
 
     if (!isLoaded) {
@@ -435,11 +324,6 @@ export function usePartCodes() {
     data,
     isLoaded,
   ]);
-
-
-  // ========================================
-  // PREVIEW FULL CODE
-  // ========================================
 
   const previewCode =
     useMemo(() => {
@@ -470,11 +354,6 @@ export function usePartCodes() {
       form.partCode,
     ]);
 
-
-  // ========================================
-  // UPDATE FORM
-  // ========================================
-
   const updateForm = (
     field: keyof PartFormData,
     value: string
@@ -493,11 +372,6 @@ export function usePartCodes() {
 
   };
 
-
-  // ========================================
-  // UPDATE WORK AREA
-  // ========================================
-
   const updateWorkArea = (
     value: AreaSetting
   ) => {
@@ -505,16 +379,6 @@ export function usePartCodes() {
     setWorkArea(
       value
     );
-
-
-    /*
-      RAK JIS dan DOORSUB
-      sama-sama menggunakan
-      Rak JIS 1-8.
-
-      Jadi ketika Area diganti,
-      Rak JIS TIDAK dikosongkan.
-    */
 
     const selectedRack:
       RackJisType =
@@ -543,11 +407,6 @@ export function usePartCodes() {
 
   };
 
-
-  // ========================================
-  // UPDATE RACK JIS
-  // ========================================
-
   const updateRackJis = (
     value: RackJisType | ""
   ) => {
@@ -569,11 +428,6 @@ export function usePartCodes() {
     );
 
   };
-
-
-  // ========================================
-  // UPDATE PIC
-  // ========================================
 
   const updatePic = (
     value: string
@@ -597,11 +451,6 @@ export function usePartCodes() {
 
   };
 
-
-  // ========================================
-  // UPDATE SHIFT
-  // ========================================
-
   const updateShift = (
     value: ShiftType
   ) => {
@@ -624,18 +473,7 @@ export function usePartCodes() {
 
   };
 
-
-  // ========================================
-  // SAVE AREA SETTING
-  // ========================================
-
   const saveAreaSetting = () => {
-
-
-    // --------------------------------------
-    // Rak JIS WAJIB dipilih
-    // untuk RAK JIS maupun DOORSUB
-    // --------------------------------------
 
     const finalRack =
       rackJis;
@@ -655,11 +493,6 @@ export function usePartCodes() {
 
     }
 
-
-    // --------------------------------------
-    // PIC
-    // --------------------------------------
-
     if (
       !pic.trim()
     ) {
@@ -677,10 +510,6 @@ export function usePartCodes() {
     }
 
 
-    // --------------------------------------
-    // SHIFT
-    // --------------------------------------
-
     if (!shift) {
 
       return {
@@ -694,11 +523,6 @@ export function usePartCodes() {
       };
 
     }
-
-
-    // --------------------------------------
-    // Setting
-    // --------------------------------------
 
     const setting = {
 
@@ -714,22 +538,12 @@ export function usePartCodes() {
 
     };
 
-
-    // --------------------------------------
-    // Save Local Storage
-    // --------------------------------------
-
     localStorage.setItem(
       SETTING_STORAGE_KEY,
       JSON.stringify(
         setting
       )
     );
-
-
-    // --------------------------------------
-    // Update Form
-    // --------------------------------------
 
     setForm(
       (previous) => ({
@@ -762,11 +576,6 @@ export function usePartCodes() {
 
   };
 
-
-  // ========================================
-  // RESET FORM
-  // ========================================
-
   const resetForm = () => {
 
     setForm(
@@ -775,7 +584,7 @@ export function usePartCodes() {
         ...previous,
 
         area:
-          "SU2ID LH",
+          form.area,
 
         partCode:
           "",
@@ -808,17 +617,7 @@ export function usePartCodes() {
 
   };
 
-
-  // ========================================
-  // SAVE PART
-  // ========================================
-
   const savePart = () => {
-
-
-    // --------------------------------------
-    // VALIDASI KODE PART
-    // --------------------------------------
 
     if (
       !/^\d{3}[A-Z0-9]{3}$/.test(
@@ -838,11 +637,6 @@ export function usePartCodes() {
 
     }
 
-
-    // --------------------------------------
-    // VALIDASI RESULT
-    // --------------------------------------
-
     if (
       form.result !== "OK" &&
       form.result !== "NG"
@@ -859,11 +653,6 @@ export function usePartCodes() {
       };
 
     }
-
-
-    // --------------------------------------
-    // VALIDASI STAMP DATE / LOT
-    // --------------------------------------
 
     if (
       !/^[A-Z]\d{4}$/.test(
@@ -883,11 +672,6 @@ export function usePartCodes() {
 
     }
 
-
-    // --------------------------------------
-    // VALIDASI AREA KERJA
-    // --------------------------------------
-
     if (
       !form.workArea
     ) {
@@ -903,18 +687,6 @@ export function usePartCodes() {
       };
 
     }
-
-
-    // --------------------------------------
-    // VALIDASI RAK JIS
-    // --------------------------------------
-
-    /*
-      Berlaku untuk:
-
-      RAK JIS
-      DOORSUB
-    */
 
     if (
       !form.rackJis
@@ -932,11 +704,6 @@ export function usePartCodes() {
 
     }
 
-
-    // --------------------------------------
-    // VALIDASI PIC
-    // --------------------------------------
-
     if (
       !form.pic.trim()
     ) {
@@ -953,11 +720,6 @@ export function usePartCodes() {
 
     }
 
-
-    // --------------------------------------
-    // VALIDASI SHIFT
-    // --------------------------------------
-
     if (
       !form.shift
     ) {
@@ -973,11 +735,6 @@ export function usePartCodes() {
       };
 
     }
-
-
-    // --------------------------------------
-    // CARI MODEL
-    // --------------------------------------
 
     const selectedArea =
       AREA_OPTIONS.find(
@@ -1001,19 +758,9 @@ export function usePartCodes() {
 
     }
 
-
-    // --------------------------------------
-    // FULL CODE
-    // --------------------------------------
-
     const fullCode =
       selectedArea.prefix +
       form.partCode;
-
-
-    // ======================================
-    // UPDATE DATA
-    // ======================================
 
     if (
       editingId !== null
@@ -1090,11 +837,6 @@ export function usePartCodes() {
 
     }
 
-
-    // ======================================
-    // CREATE DATA BARU
-    // ======================================
-
     const newPart:
       PartData = {
 
@@ -1167,11 +909,6 @@ export function usePartCodes() {
     };
 
   };
-
-
-  // ========================================
-  // EDIT PART
-  // ========================================
 
   const editPart = (
     part: PartData
@@ -1258,11 +995,6 @@ export function usePartCodes() {
 
   };
 
-
-  // ========================================
-  // DELETE PART
-  // ========================================
-
   const deletePart = (
     id: number
   ) => {
@@ -1286,11 +1018,6 @@ export function usePartCodes() {
 
   };
 
-
-  // ========================================
-  // DELETE ALL
-  // ========================================
-
   const deleteAll = () => {
 
     setData(
@@ -1300,11 +1027,6 @@ export function usePartCodes() {
     resetForm();
 
   };
-
-
-  // ========================================
-  // FILTER DATA
-  // ========================================
 
   const filteredData =
     useMemo(() => {
@@ -1406,11 +1128,6 @@ export function usePartCodes() {
       filterArea,
 
     ]);
-
-
-  // ========================================
-  // RETURN
-  // ========================================
 
   return {
 

@@ -55,10 +55,6 @@ export default function PartList({
   return (
     <section className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-      {/* =========================
-          HEADER
-      ========================= */}
-
       <div className="border-b border-slate-200 p-5 sm:p-6">
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -89,11 +85,6 @@ export default function PartList({
           )}
 
         </div>
-
-
-        {/* =========================
-            FILTER
-        ========================= */}
 
         <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
 
@@ -190,11 +181,6 @@ export default function PartList({
 
       </div>
 
-
-      {/* =========================
-          LIST
-      ========================= */}
-
       <div className="p-5 sm:p-6">
 
         {data.length === 0 ? (
@@ -209,9 +195,9 @@ export default function PartList({
 
           <div className="space-y-3">
 
-            {data.map(
+            {[...data].reverse().map(
               (item, index) => (
-
+            
                 <div
                   key={item.id}
                   className="rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-blue-300 hover:bg-blue-50/30 hover:shadow-sm"
@@ -230,7 +216,7 @@ export default function PartList({
                       <div className="flex items-center gap-3">
 
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-xs font-bold text-slate-600">
-                          {index + 1}
+                          {data.length - index}
                         </div>
 
 

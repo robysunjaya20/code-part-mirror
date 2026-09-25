@@ -1,32 +1,25 @@
 import type { PartData } from "@/types/part";
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbyx2ZZ2_WZvxiaiTeNwZFpZfgSQJmsHRBAZLnlFL1Hmk9gy76e2cTDQ5I-bIl34M6Vvyg/exec";
+  "https://script.google.com/macros/s/AKfycbzfI2r1WsGptfWqsZm-rQGI_BMWBqJUkqVznHrkbGx8NJ4NSyYeCCITrkXVOjXHPEV7kA/exec";
 
-export async function syncAllToGoogleSheets(
+export async function saveBatchToGoogleSheets(
   data: PartData[]
 ) {
   try {
+    console.log("=== SAVE BATCH TO GOOGLE SHEETS ===");
 
-    console.log(
-      "=== GOOGLE SHEETS SYNC ==="
-    );
+    console.log("API URL:", API_URL);
 
-    console.log(
-      "API URL:",
-      API_URL
-    );
+    console.log("Jumlah data lokal:", data.length);
 
-    console.log(
-      "Jumlah data:",
-      data.length
-    );
+    console.log("Data pertama:", data[0]);
 
-    console.log(
-      "Data pertama:",
-      data[0]
-    );
-
+    if (data.length === 0) {
+      throw new Error(
+        "Tidak ada data lokal yang bisa disimpan."
+      );
+    }
 
     const response = await fetch(
       API_URL,
@@ -39,12 +32,11 @@ export async function syncAllToGoogleSheets(
         },
 
         body: JSON.stringify({
-          action: "syncAll",
+          action: "saveBatch",
           data,
         }),
       }
     );
-
 
     console.log(
       "HTTP Status:",
@@ -59,67 +51,48 @@ export async function syncAllToGoogleSheets(
     const responseText =
       await response.text();
 
-
     console.log(
       "Response Google:",
       responseText
     );
 
-
     if (!response.ok) {
-
       throw new Error(
         `Google Sheets HTTP ${response.status}: ${response.statusText}`
       );
-
     }
-
 
     let result;
 
     try {
-
       result =
-        JSON.parse(
-          responseText
-        );
-
+        JSON.parse(responseText);
     } catch {
-
       throw new Error(
         "Response Google Sheets bukan JSON. Cek deployment Apps Script."
       );
-
     }
-
 
     console.log(
       "Parsed result:",
       result
     );
 
-
     if (!result.success) {
-
       throw new Error(
         result.message ||
           "Gagal menyimpan data ke Google Sheets."
       );
-
     }
-
 
     return result;
 
-
   } catch (error) {
-
     console.error(
-      "Google Sheets Sync Error:",
+      "Google Sheets Save Batch Error:",
       error
     );
 
     throw error;
-
   }
 }
