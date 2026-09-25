@@ -1,18 +1,17 @@
 import type { PartData } from "@/types/part";
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbzfI2r1WsGptfWqsZm-rQGI_BMWBqJUkqVznHrkbGx8NJ4NSyYeCCITrkXVOjXHPEV7kA/exec";
+  "https://script.google.com/macros/s/AKfycbz0AZskuUnwHEBRBIO9EVRjT1uekHIbOuw31XKCBTGy9i6bVsGGFT-r8Tn7li_J6oZxhQ/exec";
 
 export async function saveBatchToGoogleSheets(
-  data: PartData[]
+  data: PartData[],
+  workDate: string
 ) {
   try {
     console.log("=== SAVE BATCH TO GOOGLE SHEETS ===");
-
     console.log("API URL:", API_URL);
-
     console.log("Jumlah data lokal:", data.length);
-
+    console.log("Tanggal kerja:", workDate);
     console.log("Data pertama:", data[0]);
 
     if (data.length === 0) {
@@ -21,22 +20,29 @@ export async function saveBatchToGoogleSheets(
       );
     }
 
-    const response = await fetch(
-      API_URL,
-      {
-        method: "POST",
+    if (!workDate) {
+      throw new Error(
+        "Tanggal kerja belum dipilih."
+      );
+    }
 
-        headers: {
-          "Content-Type":
-            "text/plain;charset=utf-8",
-        },
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(workDate)) {
+      throw new Error(
+        "Format tanggal kerja tidak valid."
+      );
+    }
 
-        body: JSON.stringify({
-          action: "saveBatch",
-          data,
-        }),
-      }
-    );
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+      body: JSON.stringify({
+        action: "saveBatch",
+        data,
+        workDate,
+      }),
+    });
 
     console.log(
       "HTTP Status:",
@@ -65,8 +71,7 @@ export async function saveBatchToGoogleSheets(
     let result;
 
     try {
-      result =
-        JSON.parse(responseText);
+      result = JSON.parse(responseText);
     } catch {
       throw new Error(
         "Response Google Sheets bukan JSON. Cek deployment Apps Script."
@@ -86,7 +91,6 @@ export async function saveBatchToGoogleSheets(
     }
 
     return result;
-
   } catch (error) {
     console.error(
       "Google Sheets Save Batch Error:",

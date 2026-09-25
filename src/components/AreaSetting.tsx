@@ -18,6 +18,9 @@ type Props = {
   pic: string;
   shift: ShiftType;
 
+  // Tanggal kerja
+  workDate: string;
+
   onChangeArea: (
     value: AreaSetting
   ) => void;
@@ -34,6 +37,11 @@ type Props = {
     value: ShiftType
   ) => void;
 
+  // Update tanggal kerja
+  onChangeWorkDate: (
+    value: string
+  ) => void;
+
   onSave: () => void;
 };
 
@@ -43,19 +51,20 @@ export default function AreaSetting({
   rackJis,
   pic,
   shift,
+  workDate,
+
   onChangeArea,
   onChangeRackJis,
   onChangePic,
   onChangeShift,
+  onChangeWorkDate,
+
   onSave,
 }: Props) {
 
   return (
     <section className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-      {/* ========================================
-          HEADER
-      ======================================== */}
 
       <div className="border-b border-slate-200 bg-slate-50 px-5 py-4 sm:px-6">
 
@@ -72,7 +81,7 @@ export default function AreaSetting({
             </h2>
 
             <p className="text-sm font-medium text-slate-500">
-              Setting ini jarang berubah. Pilih Area, Rak JIS, PIC, dan Shift.
+              Setting area dan tanggal kerja sebelum mulai input data.
             </p>
 
           </div>
@@ -82,18 +91,37 @@ export default function AreaSetting({
       </div>
 
 
-      {/* ========================================
-          BODY
-      ======================================== */}
-
       <div className="p-5 sm:p-6">
 
-        <div className="grid gap-5 md:grid-cols-4">
+        <div className="grid gap-5 md:grid-cols-5">
 
+          <div>
 
-          {/* ====================================
-              AREA
-          ==================================== */}
+            <label
+              htmlFor="work-date"
+              className="mb-2 block text-sm font-bold text-slate-700"
+            >
+              Tanggal Kerja
+            </label>
+
+            <input
+              id="work-date"
+              type="date"
+              value={workDate}
+              onChange={(e) =>
+                onChangeWorkDate(
+                  e.target.value
+                )
+              }
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+            />
+
+            <p className="mt-1.5 text-xs font-medium text-slate-500">
+              Menentukan sheet Google Sheets.
+            </p>
+
+          </div>
+
 
           <div>
 
@@ -128,17 +156,11 @@ export default function AreaSetting({
 
           </div>
 
-
-          {/* ====================================
-              RAK JIS
-          ==================================== */}
-
           <div>
 
             <label className="mb-2 block text-sm font-bold text-slate-700">
               Rak JIS
             </label>
-
 
             <select
               value={rackJis}
@@ -153,7 +175,6 @@ export default function AreaSetting({
               <option value="">
                 Pilih Rak JIS
               </option>
-
 
               {RACK_JIS_OPTIONS.map(
                 (item) => (
@@ -170,17 +191,11 @@ export default function AreaSetting({
 
             </select>
 
-
             <p className="mt-1.5 text-xs font-medium text-slate-500">
               Pilih posisi Rak JIS untuk area {area}.
             </p>
 
           </div>
-
-
-          {/* ====================================
-              PIC
-          ==================================== */}
 
           <div>
 
@@ -190,7 +205,6 @@ export default function AreaSetting({
             >
               PIC
             </label>
-
 
             <input
               id="pic"
@@ -207,17 +221,11 @@ export default function AreaSetting({
 
           </div>
 
-
-          {/* ====================================
-              SHIFT
-          ==================================== */}
-
           <div>
 
             <label className="mb-2 block text-sm font-bold text-slate-700">
               Shift
             </label>
-
 
             <select
               value={shift}
@@ -247,7 +255,6 @@ export default function AreaSetting({
           </div>
 
         </div>
-
 
         <div className="mt-5 flex justify-end">
 

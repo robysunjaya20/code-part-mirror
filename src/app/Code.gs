@@ -1,158 +1,86 @@
 const SHEET_NAME = "data";
 
 function getSheet() {
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
 
-  const spreadsheet =
-    SpreadsheetApp.getActiveSpreadsheet();
-
-  return spreadsheet.getSheetByName(
-    SHEET_NAME
-  );
-
+  return spreadsheet.getSheetByName(SHEET_NAME);
 }
 
 function doGet() {
-
   try {
-
-    const sheet =
-      getSheet();
-
+    const sheet = getSheet();
 
     if (!sheet) {
-
       return jsonResponse({
-
         success: false,
-
-        message:
-          "Sheet data tidak ditemukan"
-
+        message: "Sheet data tidak ditemukan"
       });
-
     }
 
+    const values = sheet.getDataRange().getValues();
 
-    const values =
-      sheet
-        .getDataRange()
-        .getValues();
-
-
-    if (
-      values.length <= 1
-    ) {
-
+    if (values.length <= 1) {
       return jsonResponse({
-
         success: true,
-
         data: []
-
       });
-
     }
 
+    const headers = values[0];
 
-    const headers =
-      values[0];
+    const data = values
+      .slice(1)
+      .map((row) => {
+        const item = {};
 
+        headers.forEach((header, index) => {
+          item[header] = row[index];
+        });
 
-    const data =
-      values
-        .slice(1)
-        .map(
-          (row) => {
-
-            const item = {};
-
-
-            headers.forEach(
-              (header, index) => {
-
-                item[header] =
-                  row[index];
-
-              }
-            );
-
-
-            return item;
-
-          }
-        );
-
+        return item;
+      });
 
     return jsonResponse({
-
       success: true,
-
       data
-
     });
-
 
   } catch (error) {
-
     return jsonResponse({
-
       success: false,
-
-      message:
-        error.message
-
+      message: error.message
     });
-
   }
-
 }
 
-
 function doPost(e) {
-
   try {
+    const data = JSON.parse(e.postData.contents);
 
-    const data =
-      JSON.parse(
-        e.postData.contents
-      );
-
-
-    const sheet =
-      getSheet();
-
+    const sheet = getSheet();
 
     if (!sheet) {
-
       return jsonResponse({
-
         success: false,
-
-        message:
-          "Sheet data tidak ditemukan"
-
+        message: "Sheet data tidak ditemukan"
       });
-
     }
 
+    const action = data.action;
 
-    const action =
-      data.action;
+    /*
+    =========================================================
+    CREATE
+    =========================================================
+    */
 
-    if (
-      action === "create"
-    ) {
+    if (action === "create") {
 
-      const newId =
-        Date.now();
+      const newId = Date.now();
 
-
-      const no =
-        sheet.getLastRow();
-
+      const no = getNextNumber(sheet);
 
       sheet.appendRow([
-
         // A = No
         no,
 
@@ -184,344 +112,486 @@ function doPost(e) {
         data.detailProblem || "",
 
         // K = Created At
-        data.createdAt ||
-          new Date(),
+        data.createdAt || new Date(),
 
         // L = ID
         newId
-
       ]);
 
-
       return jsonResponse({
-
         success: true,
-
-        message:
-          "Data berhasil ditambahkan",
-
-        id:
-          newId
-
+        message: "Data berhasil ditambahkan",
+        id: newId
       });
-
     }
 
-    if (
-      action === "update"
-    ) {
+    /*
+    =========================================================
+    UPDATE
+    =========================================================
+    */
 
-      const values =
-        sheet
-          .getDataRange()
-          .getValues();
+    if (action === "update") {
 
+      const values = sheet.getDataRange().getValues();
 
-      for (
-        let i = 1;
-        i < values.length;
-        i++
-      ) {
+      for (let i = 1; i < values.length; i++) {
 
         // Kolom L = ID
-        const rowId =
-          String(
-            values[i][11]
-          );
+        const rowId = String(values[i][11]);
 
-
-        if (
-          rowId ===
-          String(data.id)
-        ) {
+        if (rowId === String(data.id)) {
 
           sheet
-            .getRange(
-              i + 1,
-              2,
-              1,
-              10
-            )
+            .getRange(i + 1, 2, 1, 10)
             .setValues([
-
               [
-
-                // B
+                // B = Shift
                 data.shift || "",
 
-                // C
+                // C = PIC
                 data.pic || "",
 
-                // D
+                // D = Area
                 data.workArea || "",
 
-                // E
+                // E = No Rakjis
                 data.rackJis || "",
 
-                // F
+                // F = Stamp Date
                 data.stampDate || "",
 
-                // G
+                // G = Model
                 data.area || "",
 
-                // H
+                // H = Full Code
                 data.fullCode || "",
 
-                // I
+                // I = Result
                 data.result || "OK",
 
-                // J
+                // J = Detail Problem
                 data.detailProblem || "",
 
-                // K
+                // K = Created At
                 values[i][10]
-
               ]
-
             ]);
 
-
           return jsonResponse({
-
             success: true,
-
-            message:
-              "Data berhasil diperbarui"
-
+            message: "Data berhasil diperbarui"
           });
-
         }
-
       }
 
-
       return jsonResponse({
-
         success: false,
-
-        message:
-          "Data tidak ditemukan"
-
+        message: "Data tidak ditemukan"
       });
-
     }
 
-    if (
-      action === "delete"
-    ) {
+    /*
+    =========================================================
+    DELETE
+    =========================================================
+    */
 
-      const values =
-        sheet
-          .getDataRange()
-          .getValues();
+    if (action === "delete") {
 
+      const values = sheet.getDataRange().getValues();
 
-      for (
-        let i = 1;
-        i < values.length;
-        i++
-      ) {
+      for (let i = 1; i < values.length; i++) {
 
         // Kolom L = ID
-        const rowId =
-          String(
-            values[i][11]
-          );
+        const rowId = String(values[i][11]);
 
+        if (rowId === String(data.id)) {
 
-        if (
-          rowId ===
-          String(data.id)
-        ) {
+          sheet.deleteRow(i + 1);
 
-          sheet.deleteRow(
-            i + 1
-          );
-
-
-          // Rapikan nomor
           renumberRows();
 
-
           return jsonResponse({
-
             success: true,
-
-            message:
-              "Data berhasil dihapus"
-
+            message: "Data berhasil dihapus"
           });
-
         }
-
       }
-
 
       return jsonResponse({
-
         success: false,
-
-        message:
-          "Data tidak ditemukan"
-
+        message: "Data tidak ditemukan"
       });
-
     }
 
-    if (
-      action === "syncAll"
-    ) {
+    /*
+    =========================================================
+    SAVE BATCH
+    =========================================================
 
-      const values =
-        data.data || [];
+    Data dari localStorage akan DITAMBAHKAN
+    ke Google Sheets.
 
+    Data lama TIDAK dihapus.
+    */
 
-      const lastRow =
-        sheet.getLastRow();
+    if (action === "saveBatch") {
 
-      if (
-        lastRow > 1
-      ) {
+      const values = data.data || [];
 
-        sheet
-          .getRange(
-            2,
-            1,
-            lastRow - 1,
-            12
-          )
-          .clearContent();
-
-      }
-
-
-      if (
-        values.length === 0
-      ) {
-
+      if (!Array.isArray(values)) {
         return jsonResponse({
-
-          success: true,
-
-          message:
-            "Tidak ada data lokal.",
-
-          count: 0
-
+          success: false,
+          message: "Format data tidak valid."
         });
-
       }
 
-
-      const rows =
-        values.map(
-          (item, index) => [
-
-            index + 1,
-
-            item.shift || "",
-
-            item.pic || "",
-
-            item.workArea || "",
-
-            item.rackJis || "",
-
-            item.stampDate || "",
-
-            item.area || "",
-
-            item.fullCode || "",
-
-            item.result || "OK",
-
-            item.detailProblem || "",
-
-            item.createdAt || "",
-
-            item.id || ""
-
-          ]
-        );
-
+      if (values.length === 0) {
+        return jsonResponse({
+          success: true,
+          message: "Tidak ada data lokal untuk disimpan.",
+          count: 0
+        });
+      }
 
       /*
-        Tulis 12 kolom ke Google Sheet
+      ---------------------------------------------------------
+      Cek ID yang sudah ada di Google Sheets
+      ---------------------------------------------------------
       */
+
+      const existingValues = sheet.getDataRange().getValues();
+
+      const existingIds = new Set();
+
+      if (existingValues.length > 1) {
+
+        for (let i = 1; i < existingValues.length; i++) {
+
+          const existingId = String(
+            existingValues[i][11] || ""
+          );
+
+          if (existingId) {
+            existingIds.add(existingId);
+          }
+        }
+      }
+
+      /*
+      ---------------------------------------------------------
+      Buat data baru saja
+      ---------------------------------------------------------
+      */
+
+      const rows = [];
+
+      let nextNumber = getNextNumber(sheet);
+
+      for (let i = 0; i < values.length; i++) {
+
+        const item = values[i];
+
+        const itemId = String(item.id || "");
+
+        /*
+        Jika ID sudah pernah tersimpan,
+        jangan masukkan lagi.
+        */
+
+        if (itemId && existingIds.has(itemId)) {
+          continue;
+        }
+
+        rows.push([
+          // A = No
+          nextNumber,
+
+          // B = Shift
+          item.shift || "",
+
+          // C = PIC
+          item.pic || "",
+
+          // D = Area
+          item.workArea || "",
+
+          // E = No Rakjis
+          item.rackJis || "",
+
+          // F = Stamp Date
+          item.stampDate || "",
+
+          // G = Model
+          item.area || "",
+
+          // H = Full Code
+          item.fullCode || "",
+
+          // I = Result
+          item.result || "OK",
+
+          // J = Detail Problem
+          item.detailProblem || "",
+
+          // K = Created At
+          item.createdAt || new Date(),
+
+          // L = ID
+          item.id || ""
+        ]);
+
+        nextNumber++;
+      }
+
+      /*
+      ---------------------------------------------------------
+      Tidak ada data baru
+      ---------------------------------------------------------
+      */
+
+      if (rows.length === 0) {
+
+        return jsonResponse({
+          success: true,
+          message: "Semua data sudah tersimpan di Google Sheets.",
+          count: 0
+        });
+      }
+
+      /*
+      ---------------------------------------------------------
+      APPEND ke Google Sheets
+      ---------------------------------------------------------
+      */
+
+      const startRow = sheet.getLastRow() + 1;
 
       sheet
         .getRange(
-          2,
+          startRow,
           1,
           rows.length,
           12
         )
-        .setValues(
-          rows
-        );
-
+        .setValues(rows);
 
       return jsonResponse({
-
         success: true,
+        message: "Data berhasil ditambahkan ke Google Sheets.",
+        count: rows.length
+      });
+    }
 
-        message:
-          "Semua data berhasil disinkronkan.",
+    /*
+    =========================================================
+    SYNC ALL
+    =========================================================
 
-        count:
-          rows.length
+    Dipertahankan hanya untuk kompatibilitas.
+    Tidak lagi menghapus data Google Sheets.
+
+    */
+
+    if (action === "syncAll") {
+
+      const values = data.data || [];
+
+      if (!Array.isArray(values)) {
+
+        return jsonResponse({
+          success: false,
+          message: "Format data tidak valid."
+        });
+      }
+
+      if (values.length === 0) {
+
+        return jsonResponse({
+          success: true,
+          message: "Tidak ada data lokal.",
+          count: 0
+        });
+      }
+
+      const existingValues =
+        sheet.getDataRange().getValues();
+
+      const existingIds = new Set();
+
+      if (existingValues.length > 1) {
+
+        for (let i = 1; i < existingValues.length; i++) {
+
+          const existingId =
+            String(
+              existingValues[i][11] || ""
+            );
+
+          if (existingId) {
+            existingIds.add(existingId);
+          }
+        }
+      }
+
+      const rows = [];
+
+      let nextNumber =
+        getNextNumber(sheet);
+
+      values.forEach((item) => {
+
+        const itemId =
+          String(item.id || "");
+
+        if (
+          itemId &&
+          existingIds.has(itemId)
+        ) {
+          return;
+        }
+
+        rows.push([
+          nextNumber++,
+
+          item.shift || "",
+
+          item.pic || "",
+
+          item.workArea || "",
+
+          item.rackJis || "",
+
+          item.stampDate || "",
+
+          item.area || "",
+
+          item.fullCode || "",
+
+          item.result || "OK",
+
+          item.detailProblem || "",
+
+          item.createdAt || new Date(),
+
+          item.id || ""
+        ]);
 
       });
 
+      if (rows.length === 0) {
+
+        return jsonResponse({
+          success: true,
+          message:
+            "Semua data sudah tersimpan di Google Sheets.",
+          count: 0
+        });
+      }
+
+      sheet
+        .getRange(
+          sheet.getLastRow() + 1,
+          1,
+          rows.length,
+          12
+        )
+        .setValues(rows);
+
+      return jsonResponse({
+        success: true,
+        message:
+          "Data berhasil ditambahkan ke Google Sheets.",
+        count: rows.length
+      });
     }
 
+    /*
+    =========================================================
+    ACTION TIDAK DIKENAL
+    =========================================================
+    */
 
     return jsonResponse({
-
       success: false,
-
-      message:
-        "Action tidak dikenal"
-
+      message: "Action tidak dikenal"
     });
-
 
   } catch (error) {
 
     return jsonResponse({
-
       success: false,
-
-      message:
-        error.message
-
+      message: error.message
     });
+  }
+}
 
+
+/*
+=========================================================
+MENCARI NOMOR BERIKUTNYA
+=========================================================
+*/
+
+function getNextNumber(sheet) {
+
+  const lastRow =
+    sheet.getLastRow();
+
+  if (lastRow <= 1) {
+    return 1;
   }
 
+  const values =
+    sheet
+      .getRange(
+        2,
+        1,
+        lastRow - 1,
+        1
+      )
+      .getValues();
+
+  let maxNumber = 0;
+
+  values.forEach((row) => {
+
+    const number =
+      Number(row[0]);
+
+    if (
+      !isNaN(number) &&
+      number > maxNumber
+    ) {
+      maxNumber = number;
+    }
+
+  });
+
+  return maxNumber + 1;
 }
+
+
+/*
+=========================================================
+RENUMBER ROWS
+=========================================================
+*/
 
 function renumberRows() {
 
   const sheet =
     getSheet();
 
-
   const lastRow =
     sheet.getLastRow();
 
-
-  if (
-    lastRow <= 1
-  ) {
-
+  if (lastRow <= 1) {
     return;
-
   }
 
-
   const numbers = [];
-
 
   for (
     let i = 1;
@@ -535,7 +605,6 @@ function renumberRows() {
 
   }
 
-
   sheet
     .getRange(
       2,
@@ -546,20 +615,16 @@ function renumberRows() {
     .setValues(
       numbers
     );
-
 }
 
 
 function jsonResponse(data) {
 
   return ContentService
-
     .createTextOutput(
       JSON.stringify(data)
     )
-
     .setMimeType(
       ContentService.MimeType.JSON
     );
-
 }

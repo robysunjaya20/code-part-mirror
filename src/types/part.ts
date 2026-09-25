@@ -23,9 +23,7 @@ export type PartData = {
   prefix: string;
   partCode: string;
   fullCode: string;
-
   result: PartResult;
-
   stampDate: string;
   detailProblem: string;
 
@@ -35,6 +33,7 @@ export type PartData = {
   pic: string;
   shift: ShiftType;
 
+  workDate: string;
   createdAt: string;
 };
 
