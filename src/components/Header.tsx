@@ -15,11 +15,11 @@ export default function Header() {
 
           <div className="min-w-0">
             <h1 className="truncate text-lg font-bold text-slate-900 sm:text-xl">
-              Part Code Management
+              Standby Management Report
             </h1>
 
             <p className="truncate text-xs font-medium text-slate-500 sm:text-sm">
-              SU2ID & KS Part Code System
+              SU2ID & KS Mirror 
             </p>
           </div>
 

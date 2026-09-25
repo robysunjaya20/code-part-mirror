@@ -36,7 +36,7 @@ export default function SyncModal({
                 </h2>
 
                 <p className="text-sm font-medium text-slate-500">
-                  Sinkronisasi data lokal
+                  Semua data lokal akan disimpan
                 </p>
 
               </div>
@@ -62,9 +62,8 @@ export default function SyncModal({
         <div className="p-6">
 
           <p className="text-sm font-medium leading-relaxed text-slate-600">
-            Anda akan menyinkronkan seluruh data
-            yang saat ini tersimpan di browser
-            ke Google Sheets.
+            Data lokal  akan disimpan di Google Sheet.
+            Data akan digabung berdasarkan tanggal
           </p>
 
 
@@ -81,7 +80,7 @@ export default function SyncModal({
                 </p>
 
                 <p className="mt-1 text-sm font-semibold text-emerald-900">
-                  Siap disinkronkan
+                  Siap disimpan
                 </p>
 
               </div>
@@ -115,10 +114,8 @@ export default function SyncModal({
               </span>
 
               <p className="text-xs font-medium leading-relaxed text-amber-800">
-                Data di Google Sheets akan
-                disesuaikan dengan data lokal.
-                Data lama yang tidak ada di lokal
-                dapat terhapus dari sheet.
+                Pastikan Semua Data yang kamu simpan sudah masuk di googlesheet 
+                dan jangan lupa backup datanya untuk dikirim
               </p>
 
             </div>

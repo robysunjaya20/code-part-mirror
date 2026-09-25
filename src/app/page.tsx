@@ -251,11 +251,7 @@ export default function Home() {
         true
       );
 
-
-      /*
-       * Sekarang tanggal kerja
-       * ikut dikirim ke Apps Script.
-       */
+      
       const result =
         await saveBatchToGoogleSheets(
           data,
