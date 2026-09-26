@@ -27,7 +27,7 @@ export default function PartForm({
   onCancel,
 }: Props) {
   return (
-    <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+    <section className="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
       <div className="border-b border-slate-200 px-3 py-3 sm:px-4">
         <div className="flex items-center justify-between gap-2">
           <div>
@@ -36,7 +36,7 @@ export default function PartForm({
             </h2>
 
             <p className="mt-0.5 text-xs font-medium text-slate-500">
-              Masukkan STAMP DATE / LOT, pilih model, kode part, result, dan detail problem
+              Isi Stamp Date, pilih model, kode part, result
             </p>
           </div>
 
@@ -55,7 +55,7 @@ export default function PartForm({
               htmlFor="stampDate"
               className="mb-1 block text-[11px] font-bold text-slate-700"
             >
-              STAMP DATE / LOT
+              Stamp Date
             </label>
 
             <input
@@ -77,7 +77,7 @@ export default function PartForm({
             />
 
             <p className="mt-1 text-[10px] font-medium text-slate-500">
-              Format: 1 huruf (Bulan) + 4 angka (Tgl Thn)
+              Format: 1 huruf Bulan + 4 angka
             </p>
           </div>
 
@@ -186,7 +186,7 @@ export default function PartForm({
             htmlFor="detailProblem"
             className="mb-1 block text-[11px] font-bold text-slate-700"
           >
-            DETAIL PROBLEM
+            Detail Problem
           </label>
 
           <textarea

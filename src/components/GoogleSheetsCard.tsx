@@ -27,7 +27,7 @@ export default function GoogleSheetsCard({
 
               <p className="mt-0.5 max-w-xl text-xs font-medium leading-relaxed text-emerald-800">
                 Data saat ini disimpan secara lokal.
-                Gunakan tombol untuk menyinkronkan
+                Gunakan tombol untuk menyimpan
                 seluruh data ke Google Sheets.
               </p>
 

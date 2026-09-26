@@ -58,7 +58,7 @@ export default function PartList({
             </h2>
 
             <p className="mt-1 text-xs font-medium text-slate-500">
-              Kelola kode part yang tersimpan di lokal.
+              Kelola kode part yang tersimpan.
             </p>
           </div>
 
@@ -66,7 +66,7 @@ export default function PartList({
             <button
               type="button"
               onClick={onDeleteAll}
-              className="rounded-xl border border-red-300 bg-red-50 px-2 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100"
+              className="rounded-lg border border-red-300 bg-red-50 px-2 py-1 text-[11px] font-bold text-red-700 transition hover:bg-red-100"
             >
               Hapus Semua
             </button>
@@ -109,7 +109,7 @@ export default function PartList({
               className="w-full min-w-0 rounded-xl border border-slate-300 bg-white px-2 py-3 text-xs font-semibold text-slate-800 outline-none hover:border-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
             >
               <option value="ALL">
-                Semua Model
+                All Model
               </option>
 
               {AREA_OPTIONS.map((item) => (
