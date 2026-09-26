@@ -14,30 +14,16 @@ import type {
 
 type Props = {
   area: AreaSetting;
-  rackJis: RackJisType | "";
+  rackJis: RackJisType;
   pic: string;
   shift: ShiftType;
   workDate: string;
 
-  onChangeArea: (
-    value: AreaSetting
-  ) => void;
-
-  onChangeRackJis: (
-    value: RackJisType | ""
-  ) => void;
-
-  onChangePic: (
-    value: string
-  ) => void;
-
-  onChangeShift: (
-    value: ShiftType
-  ) => void;
-
-  onChangeWorkDate: (
-    value: string
-  ) => void;
+  onChangeArea: (value: AreaSetting) => void;
+  onChangeRackJis: (value: RackJisType) => void;
+  onChangePic: (value: string) => void;
+  onChangeShift: (value: ShiftType) => void;
+  onChangeWorkDate: (value: string) => void;
 
   onSave: () => void;
 };
@@ -56,8 +42,8 @@ export default function AreaSetting({
   onSave,
 }: Props) {
   return (
-    <section className="mb-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-200 bg-slate-50 px-3 py-2.5 sm:px-4">
+    <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div className="border-b border-slate-200 px-3 py-2.5 sm:px-4">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-base">
             ⚙️
@@ -68,7 +54,7 @@ export default function AreaSetting({
               Setting Area Kerja
             </h2>
 
-            <p className="text-[11px] font-medium text-slate-500">
+            <p className="mt-0.5 text-[11px] font-medium text-slate-500">
               Setting area dan tanggal kerja sebelum mulai input data.
             </p>
           </div>
@@ -76,17 +62,17 @@ export default function AreaSetting({
       </div>
 
       <div className="p-3 sm:p-4">
-        <div className="grid gap-3 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
           <div>
             <label
-              htmlFor="work-date"
+              htmlFor="workDate"
               className="mb-1 block text-[11px] font-bold text-slate-700"
             >
               Tanggal Kerja
             </label>
 
             <input
-              id="work-date"
+              id="workDate"
               type="date"
               value={workDate}
               onChange={(e) =>
@@ -97,16 +83,45 @@ export default function AreaSetting({
           </div>
 
           <div>
-            <label className="mb-1 block text-[11px] font-bold text-slate-700">
+            <label
+              htmlFor="shift"
+              className="mb-1 block text-[11px] font-bold text-slate-700"
+            >
+              Shift
+            </label>
+
+            <select
+              id="shift"
+              value={shift}
+              onChange={(e) =>
+                onChangeShift(e.target.value as ShiftType)
+              }
+              className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-xs font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+            >
+              {SHIFT_OPTIONS.map((item) => (
+                <option
+                  key={item}
+                  value={item}
+                >
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="area"
+              className="mb-1 block text-[11px] font-bold text-slate-700"
+            >
               Area
             </label>
 
             <select
+              id="area"
               value={area}
               onChange={(e) =>
-                onChangeArea(
-                  e.target.value as AreaSetting
-                )
+                onChangeArea(e.target.value as AreaSetting)
               }
               className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-xs font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
             >
@@ -122,11 +137,15 @@ export default function AreaSetting({
           </div>
 
           <div>
-            <label className="mb-1 block text-[11px] font-bold text-slate-700">
+            <label
+              htmlFor="rackJis"
+              className="mb-1 block text-[11px] font-bold text-slate-700"
+            >
               Rak JIS
             </label>
 
             <select
+              id="rackJis"
               value={rackJis}
               onChange={(e) =>
                 onChangeRackJis(
@@ -135,10 +154,6 @@ export default function AreaSetting({
               }
               className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-xs font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
             >
-              <option value="">
-                Pilih Rak JIS
-              </option>
-
               {RACK_JIS_OPTIONS.map((item) => (
                 <option
                   key={item}
@@ -150,7 +165,7 @@ export default function AreaSetting({
             </select>
           </div>
 
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <label
               htmlFor="pic"
               className="mb-1 block text-[11px] font-bold text-slate-700"
@@ -165,34 +180,9 @@ export default function AreaSetting({
               onChange={(e) =>
                 onChangePic(e.target.value)
               }
-              placeholder="Ketik nama PIC"
-              className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-xs font-semibold text-slate-800 shadow-sm outline-none transition placeholder:font-normal placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+              placeholder="Nama PIC"
+              className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-xs font-semibold text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
             />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-[11px] font-bold text-slate-700">
-              Shift
-            </label>
-
-            <select
-              value={shift}
-              onChange={(e) =>
-                onChangeShift(
-                  e.target.value as ShiftType
-                )
-              }
-              className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-xs font-semibold text-slate-800 shadow-sm outline-none transition hover:border-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-            >
-              {SHIFT_OPTIONS.map((item) => (
-                <option
-                  key={item}
-                  value={item}
-                >
-                  {item}
-                </option>
-              ))}
-            </select>
           </div>
         </div>
 
@@ -200,7 +190,7 @@ export default function AreaSetting({
           <button
             type="button"
             onClick={onSave}
-            className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-slate-800 active:scale-[0.99]"
+            className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-slate-800 active:scale-[0.98]"
           >
             Simpan Setting
           </button>

@@ -1,12 +1,8 @@
 "use client";
 
-import {
-  AREA_OPTIONS,
-} from "@/data/partConfig";
+import { AREA_OPTIONS } from "@/data/partConfig";
 
-import type {
-  PartFormData,
-} from "@/types/part";
+import type { PartFormData } from "@/types/part";
 
 type Props = {
   form: PartFormData;
@@ -36,9 +32,7 @@ export default function PartForm({
         <div className="flex items-center justify-between gap-2">
           <div>
             <h2 className="text-base font-bold text-slate-900">
-              {editing
-                ? "Edit Kode Part"
-                : "Tambah Kode Part"}
+              {editing ? "Edit Kode Part" : "Tambah Kode Part"}
             </h2>
 
             <p className="mt-0.5 text-xs font-medium text-slate-500">
@@ -55,7 +49,7 @@ export default function PartForm({
       </div>
 
       <div className="p-3 sm:p-4">
-        <div className="grid gap-3 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           <div>
             <label
               htmlFor="stampDate"
@@ -226,9 +220,7 @@ export default function PartForm({
             onClick={onSubmit}
             className="w-auto rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md active:scale-[0.99] sm:flex-1"
           >
-            {editing
-              ? "✓ Simpan Perubahan"
-              : "+ Tambah Data"}
+            {editing ? "✓ Simpan Perubahan" : "+ Tambah Data"}
           </button>
 
           {editing && (
