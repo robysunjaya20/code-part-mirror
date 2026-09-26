@@ -23,17 +23,26 @@ export const WORK_AREA_OPTIONS = [
 ] as const;
 
 export const RACK_JIS_OPTIONS = [
-  "RAK JIS 1",
-  "RAK JIS 2",
-  "RAK JIS 3",
-  "RAK JIS 4",
-  "RAK JIS 5",
-  "RAK JIS 6",
-  "RAK JIS 7",
-  "RAK JIS 8",
+  "No 1",
+  "No 2",
+  "No 3",
+  "No 4",
+  "No 5",
+  "No 6",
+  "No 7",
+  "No 8",
 ] as const;
+
+export type RackJisType =
+  (typeof RACK_JIS_OPTIONS)[number];
 
 export const SHIFT_OPTIONS = [
   "SHIFT 1",
   "SHIFT 2",
 ] as const;
+
+export type WorkAreaType =
+  (typeof WORK_AREA_OPTIONS)[number];
+
+export type ShiftType =
+  (typeof SHIFT_OPTIONS)[number];

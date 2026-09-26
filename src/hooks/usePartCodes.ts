@@ -80,7 +80,7 @@ export function usePartCodes() {
 
   const [rackJis, setRackJis] =
     useState<RackJisType>(
-      "RAK JIS 1"
+      "No 1"
     );
 
   const [pic, setPic] =
@@ -121,7 +121,7 @@ export function usePartCodes() {
         "RAK JIS",
 
       rackJis:
-        "RAK JIS 1",
+        "No 1",
 
       pic:
         "",
@@ -200,7 +200,7 @@ export function usePartCodes() {
                 const migratedRack:
                   RackJisType =
                   item.rackJis ||
-                  "";
+                  "No 1";
 
                 const migratedShift:
                   ShiftType =
@@ -294,7 +294,7 @@ export function usePartCodes() {
         const loadedRack:
           RackJisType =
           setting.rackJis ||
-          "RAK JIS 1";
+          "No 1";
 
 
         const loadedPic =
@@ -462,7 +462,7 @@ export function usePartCodes() {
     const selectedRack:
       RackJisType =
       rackJis ||
-      "RAK JIS 1";
+      "No 1";
 
 
     setRackJis(
@@ -800,7 +800,7 @@ export function usePartCodes() {
           false,
 
         message:
-          "Rak JIS belum dipilih.",
+          "Rakjis belum dipilih.",
       };
 
     }
@@ -1050,7 +1050,7 @@ export function usePartCodes() {
 
     setRackJis(
       part.rackJis ||
-      "RAK JIS 1"
+      "No 1"
     );
 
 
@@ -1104,7 +1104,7 @@ export function usePartCodes() {
 
       rackJis:
         part.rackJis ||
-        "RAK JIS 1",
+        "No 1",
 
       pic:
         part.pic ||

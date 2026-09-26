@@ -141,7 +141,7 @@ export default function AreaSetting({
               htmlFor="rackJis"
               className="mb-1 block text-[11px] font-bold text-slate-700"
             >
-              Rak JIS
+              Nomor Rakjis
             </label>
 
             <select

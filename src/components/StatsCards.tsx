@@ -26,7 +26,14 @@ export default function StatsCards({
       labelClass:
         "text-slate-500",
     },
-
+    {
+      title: "Ditampilkan",
+      value: displayed,
+      className:
+        "border-amber-200 bg-amber-50 text-amber-800",
+      labelClass:
+        "text-amber-700",
+    },
     {
       title: "SU2ID",
       value: su2id,
@@ -35,7 +42,6 @@ export default function StatsCards({
       labelClass:
         "text-blue-700",
     },
-
     {
       title: "KS",
       value: ks,
@@ -43,15 +49,6 @@ export default function StatsCards({
         "border-purple-200 bg-purple-50 text-purple-800",
       labelClass:
         "text-purple-700",
-    },
-
-    {
-      title: "Ditampilkan",
-      value: displayed,
-      className:
-        "border-amber-200 bg-amber-50 text-amber-800",
-      labelClass:
-        "text-amber-700",
     },
   ];
 
