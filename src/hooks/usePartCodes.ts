@@ -79,7 +79,7 @@ export function usePartCodes() {
     );
 
   const [rackJis, setRackJis] =
-    useState<RackJisType | "">(
+    useState<RackJisType>(
       "RAK JIS 1"
     );
 
@@ -198,7 +198,7 @@ export function usePartCodes() {
 
 
                 const migratedRack:
-                  RackJisType | "" =
+                  RackJisType =
                   item.rackJis ||
                   "";
 
@@ -292,7 +292,7 @@ export function usePartCodes() {
 
 
         const loadedRack:
-          RackJisType | "" =
+          RackJisType =
           setting.rackJis ||
           "RAK JIS 1";
 
@@ -485,7 +485,7 @@ export function usePartCodes() {
   };
 
   const updateRackJis = (
-    value: RackJisType | ""
+    value: RackJisType
   ) => {
 
     setRackJis(
